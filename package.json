@@ -11,7 +11,7 @@
    "dependencies": {
       "body-parser": "^1.18.1",
       "express": "^4.15.4",
-      "mysql": "^2.14.1",
+      "pg": "^8.7.3",
       "reflect-metadata": "^0.1.10",
       "typeorm": "0.2.41"
    },

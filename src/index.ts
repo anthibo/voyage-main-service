@@ -4,7 +4,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 import {Routes} from "./routes";
-import {User} from "./entity/User";
+import {User} from "./entity/user.entity";
 
 createConnection().then(async connection => {
 
@@ -29,7 +29,7 @@ createConnection().then(async connection => {
     // ...
 
     // start express server
-    app.listen(3000);
+    app.listen(5000);
 
     // insert new users for test
     await connection.manager.save(connection.manager.create(User, {
