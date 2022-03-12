@@ -2,29 +2,20 @@ import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import { CommonEntity } from "./commonEntity";
 
-export enum UserRole {
-    ADMIN = "admin",
-    USER = "normal_user",
-  }
-  export enum UserStatus {
+export enum UserStatus {
     ACTIVE = 'active',
     INACTIVE = "inactive",
     BANNED = 'banned'
   }
-@Entity('users')
-export class User extends CommonEntity {
+@Entity('agencies')
+export class Agency extends CommonEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column({
         length: 55
     })
-    firstName!: string;
-
-    @Column({
-        length: 55
-    })
-    lastName!: string;
+    companyName!: string;
 
     @Column({
         length: 55,
@@ -33,7 +24,7 @@ export class User extends CommonEntity {
     username!: string
 
     @Column()
-    private password!: string
+    password!: string
 
     @Column({
         unique: true
@@ -41,26 +32,37 @@ export class User extends CommonEntity {
     email!: string
 
     @Column({
+        unique: true
+    })
+    nationalId!: string
+
+    @Column({
         unique: true,
+        nullable:true
+    })
+    fbLink?: string
+
+    @Column({
+        unique: true,
+        nullable:true
+    })
+    igLink?: string
+    @Column({
+        unique: true
+    })
+    phoneNumber!: string
+
+    @Column({
         nullable: true
     })
-    phoneNumber?: string
-
+    address?: string
+    
     @Column({
         type: "enum",
         enum: UserStatus,
         default: UserStatus.ACTIVE
     })
     status: string
-
-    @Column(
-        {
-            type: "enum",
-            enum: UserRole,
-            default: UserRole.USER
-        }
-    )
-    securityRole: UserRole
 
     @BeforeInsert()
     async beforeInsert() {
