@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import { CommonEntity } from "./commonEntity";
 
@@ -62,9 +62,15 @@ export class User extends CommonEntity {
     )
     securityRole: UserRole
 
+
     @BeforeInsert()
-    async beforeInsert() {
+    @BeforeUpdate()
+    private async hashPassword() {
       const salt = await bcrypt.genSalt()
       this.password = await bcrypt.hash(this.password, salt);
+    }
+
+    async comparePassword(password: string): Promise<boolean>{
+        return await bcrypt.compare(password, this.password)
     }
 }

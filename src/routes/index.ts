@@ -21,8 +21,12 @@ export default class Router {
       res.status(200).send('admin pong');
     });
     // auth routes
-    this.router.post('/auth/user/register', this.controllers.authController.registerNormalUser)
-    this.router.post('/auth/agency/register', this.controllers.authController.registerAgency)
+    this.router.post('/auth/register/user', this.controllers.authController.registerNormalUser)
+    this.router.post('/auth/register/agency', this.controllers.authController.registerAgency)
+    this.router.post('/auth/login/user', this.controllers.authController.loginNormalUser)
+    this.router.post('/auth/login/agency', this.controllers.authController.loginAgency)
+
+
     
   }
 

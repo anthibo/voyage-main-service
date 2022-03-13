@@ -5,17 +5,24 @@ import AuthService from '../services/auth.service'
 const userRegisterSchema = Joi.object({
     email: Joi.string().email().required(),
     username: Joi.string().required(),
-    password: Joi.string().min(8),
+    password: Joi.string().min(8).required(),
     confirmPassword: Joi.string().required().valid(Joi.ref('password')),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     phoneNumber: Joi.string(),
     currentCity: Joi.string().uuid()
 })
+
+const userLoginSchema = Joi.object({
+    email: Joi.string().email(),
+    username: Joi.string(),
+    password: Joi.string() 
+}).or('email', 'username')
+
 const agencyRegisterSchema = Joi.object({
     email: Joi.string().email().required(),
     username: Joi.string().required(),
-    password: Joi.string().min(8),
+    password: Joi.string().min(8).required(),
     confirmPassword: Joi.string().required().valid(Joi.ref('password')),
     companyName: Joi.string().required(),
     phoneNumber: Joi.string().required(),
@@ -28,9 +35,12 @@ const agencyRegisterSchema = Joi.object({
 export class AuthController {
     private authService: AuthService
     constructor() {
+
         this.authService = new AuthService()
         this.registerAgency = this.registerAgency.bind(this)
         this.registerNormalUser = this.registerNormalUser.bind(this)
+        this.loginNormalUser = this.loginNormalUser.bind(this)
+        this.loginAgency = this.loginAgency.bind(this)
 
     }
     
@@ -68,5 +78,37 @@ export class AuthController {
         }
     }
 
+    async loginNormalUser(request: Request, response: Response){
+        try{
+            const {value, error} = userLoginSchema.validate(request.body)
+            if(error){
+               return response.status(400).json({
+                    message: error.message
+                })
+            }
+           const res = await this.authService.loginNormalUser(value)
+           return response.status(200).json(res)
+        }
+        catch(err){
+            console.log(err)
+           return response.status(500).json(err)
+        }
+    }
 
+    async loginAgency(request: Request, response: Response){
+        try{
+            const {value, error} = userLoginSchema.validate(request.body)
+            if(error){
+               return response.status(400).json({
+                    message: error.message
+                })
+            }
+           const res = await this.authService.loginAgency(value)
+           return response.status(200).json(res)
+        }
+        catch(err){
+            console.log(err)
+           return response.status(500).json(err)
+        }
+    }
 }
