@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import Joi from 'joi';
+import AppError from "../errors/error";
 import AuthService from '../services/auth.service'
 
 const userRegisterSchema = Joi.object({
@@ -78,7 +79,7 @@ export class AuthController {
         }
     }
 
-    async loginNormalUser(request: Request, response: Response){
+    async loginNormalUser(request: Request, response: Response, next: NextFunction){
         try{
             const {value, error} = userLoginSchema.validate(request.body)
             if(error){
@@ -91,7 +92,16 @@ export class AuthController {
         }
         catch(err){
             console.log(err)
-           return response.status(500).json(err)
+            if(err instanceof AppError){
+                response.status(err.statusCode).json({
+                    message: err.message
+                })
+            }
+            else{ 
+                response.status(500).json({
+                    err
+                })
+            }
         }
     }
 
@@ -108,7 +118,22 @@ export class AuthController {
         }
         catch(err){
             console.log(err)
-           return response.status(500).json(err)
+            if(err instanceof AppError){
+                response.status(err.statusCode).json({
+                    message: err.message
+                })
+            }
+            else{ 
+                response.status(500).json({
+                    err
+                })
+            }
         }
+    }
+    async forgetUserPassword(request: Request, response: Response){
+        
+    }
+    async forgetAgencyPassword(request: Request, response: Response){
+
     }
 }

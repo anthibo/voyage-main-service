@@ -3,7 +3,7 @@ import {sign} from 'jsonwebtoken'
 import {User} from '../entity/user.entity';
 import { SignToken } from '../utils/helpers/auth';
 import { Agency } from '../entity/agency.entity';
-
+import AppError from '../errors/error'
 interface BusinessUserInput {
   email : string;
   companyName: string;
@@ -75,40 +75,34 @@ interface LoginInput{
       public async createAdminUser(){
           //TODO: to be implemented
     }
+    // implement app error
     public async loginNormalUser(input: LoginInput){
-      try {
         console.log(input)
         const existingUser = await this.userRepository.findOne({where:[{email: input.email}, {username: input.username}]})
         if(!existingUser){
-          throw new Error('provided credentials do not match 1')
+          throw new AppError('provided credentials do not match', 400)
         }
         const isValidPassword = await existingUser.comparePassword(input.password)
-        if(!isValidPassword) throw new Error('provided credentials do not match 2')
+        if(!isValidPassword) throw new AppError('provided credentials do not match', 400)
         const token = SignToken({id: existingUser.id, username: existingUser.username, securityRole: existingUser.securityRole})
         return {
           message: 'success',
           token
         }
       
-      } catch (err) {
-        console.log(err)  
-      }
+      
     }
     public async loginAgency(input: LoginInput){
-      try {
         const existingUser = await this.agencyRepository.findOne({where:[{email: input.email}, {username: input.username}]})
         if(!existingUser){
-          throw new Error('provided credentials do not match')
+          throw new AppError('provided credentials do not match', 400)
         }
         const isValidPassword = await existingUser.comparePassword(input.password)
-        if(!isValidPassword) throw new Error('provided credentials do not match')
+        if(!isValidPassword) throw new AppError('provided credentials do not match', 400)
         const token = SignToken({id: existingUser.id, username: existingUser.username})
         return {
           message: 'success',
           token
-        }
-      } catch (err) {
-        console.log(err)  
-      }
+        } 
     }
 }
