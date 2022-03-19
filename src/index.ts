@@ -5,6 +5,8 @@ import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 const logger = require('morgan')
 import Router from './routes'
+
+const port = process.env.PORT || 3000
 createConnection().then(async connection => {
 
     // create express app
@@ -31,8 +33,8 @@ createConnection().then(async connection => {
     // ...
 
     // start express server
-    app.listen(3000);
+    app.listen(port);
 
-    console.log("Server has started on port 3000. Open http://localhost:3000");
+    console.log("Server has started");
 
 }).catch(error => console.log(error));
