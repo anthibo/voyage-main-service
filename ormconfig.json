@@ -1,12 +1,15 @@
 {
    "type": "postgres",
-   "host": "127.0.0.1",
+   "host": "ec2-52-208-185-143.eu-west-1.compute.amazonaws.com",
    "port": 5432,
-   "username": "root",
-   "password": "root",
-   "database": "voyage",
-   "synchronize": true,
+   "username": "nxxwtijutprctt",
+   "password": "840aeefc13da497ee3bd2a2055813211ad5cf351020ec9e749922572ef04abca",
+   "database": "db18bob3liamlt",
+   "synchronize": false,
    "logging": false,
+   "extra": {
+      "ssl": true
+ },
    "entities": [
       "src/entity/**/*.entity.ts"
    ],
