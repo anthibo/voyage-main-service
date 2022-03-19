@@ -87,7 +87,7 @@ interface LoginInput{
         const token = SignToken({id: existingUser.id, username: existingUser.username, securityRole: existingUser.securityRole})
         return {
           message: 'success',
-          token
+          token: `Bearer ${token}`
         }
       
       
@@ -102,7 +102,7 @@ interface LoginInput{
         const token = SignToken({id: existingUser.id, username: existingUser.username})
         return {
           message: 'success',
-          token
+          token: `Bearer ${token}`  
         } 
     }
 }
