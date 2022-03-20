@@ -80,10 +80,10 @@ interface LoginInput{
         console.log(input)
         const existingUser = await this.userRepository.findOne({where:[{email: input.email}, {username: input.username}]})
         if(!existingUser){
-          throw new AppError('provided credentials do not match', 400)
+          throw new AppError('provided credentials do not match', 200)
         }
         const isValidPassword = await existingUser.comparePassword(input.password)
-        if(!isValidPassword) throw new AppError('provided credentials do not match', 400)
+        if(!isValidPassword) throw new AppError('provided credentials do not match', 200)
         const token = SignToken({id: existingUser.id, username: existingUser.username, securityRole: existingUser.securityRole})
         return {
           message: 'success',
@@ -95,10 +95,10 @@ interface LoginInput{
     public async loginAgency(input: LoginInput){
         const existingUser = await this.agencyRepository.findOne({where:[{email: input.email}, {username: input.username}]})
         if(!existingUser){
-          throw new AppError('provided credentials do not match', 400)
+          throw new AppError('provided credentials do not match', 200)
         }
         const isValidPassword = await existingUser.comparePassword(input.password)
-        if(!isValidPassword) throw new AppError('provided credentials do not match', 400)
+        if(!isValidPassword) throw new AppError('provided credentials do not match', 200)
         const token = SignToken({id: existingUser.id, username: existingUser.username})
         return {
           message: 'success',
