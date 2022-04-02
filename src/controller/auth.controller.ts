@@ -2,37 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import Joi from 'joi';
 import AppError from "../errors/error";
 import AuthService from '../services/auth.service'
+import { agencyRegisterSchema, userLoginSchema, userRegisterSchema } from "../utils/schemas/auth.schema";
 
-const userRegisterSchema = Joi.object({
-    email: Joi.string().email().required(),
-    username: Joi.string().required(),
-    password: Joi.string().min(8).required(),
-    confirmPassword: Joi.string().required().valid(Joi.ref('password')),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
-    phoneNumber: Joi.string(),
-    currentCity: Joi.string().uuid()
-})
-
-const userLoginSchema = Joi.object({
-    email: Joi.string().email(),
-    username: Joi.string(),
-    password: Joi.string() 
-}).or('email', 'username')
-
-const agencyRegisterSchema = Joi.object({
-    email: Joi.string().email().required(),
-    username: Joi.string().required(),
-    password: Joi.string().min(8).required(),
-    confirmPassword: Joi.string().required().valid(Joi.ref('password')),
-    companyName: Joi.string().required(),
-    phoneNumber: Joi.string().required(),
-    address: Joi.string(),
-    fb_link: Joi.string().uri(),
-    ig_link: Joi.string().uri(),
-    nationalId: Joi.string().required()
-
-})
 export class AuthController {
     private authService: AuthService
     constructor() {
