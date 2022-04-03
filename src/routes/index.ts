@@ -1,5 +1,6 @@
 import { AuthController } from "../controller/auth.controller";
 import { CityController } from "../controller/city.controller";
+import { auth } from "../utils/middleware/auth.middleware";
 
 const express = require('express');
 
@@ -7,12 +8,14 @@ const router = express.Router();
 
 export default class Router {
   private router: any;
+  private authMiddleware: Function
   private controllers: {
       authController: AuthController
       cityController: CityController
   };
   constructor() {
     this.router = express.Router();
+    this.authMiddleware = auth
     this.controllers = {
       authController: new AuthController(),
       cityController: new CityController()
@@ -31,7 +34,7 @@ export default class Router {
     this.router.post('/auth/login/agency', this.controllers.authController.loginAgency)
 
     // city routes
-    this.router.get('/city', this.controllers.cityController.findAllCities)
+    this.router.get('/city', this.authMiddleware, this.controllers.cityController.findAllCities)
     this.router.post('/city', this.controllers.cityController.createCity)
     this.router.get('/city/:id', this.controllers.cityController.findOne)
     this.router.patch('/city/:id', this.controllers.cityController.updateCity)
