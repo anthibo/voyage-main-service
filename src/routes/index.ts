@@ -34,6 +34,7 @@ export default class Router {
     this.router.get('/city', this.controllers.cityController.findAllCities)
     this.router.post('/city', this.controllers.cityController.createCity)
     this.router.get('/city/:id', this.controllers.cityController.findOne)
+    this.router.patch('/city/:id', this.controllers.cityController.updateCity)
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
 
 

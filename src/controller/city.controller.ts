@@ -23,6 +23,8 @@ export class CityController {
         this.createCity = this.createCity.bind(this)
         this.findOne = this.findOne.bind(this)
         this.deleteCity = this.deleteCity.bind(this)
+        this.updateCity = this.updateCity.bind(this)
+
 
     }
     
@@ -97,6 +99,40 @@ export class CityController {
             
         }
     }
+    async updateCity(request: Request, response: Response, next: NextFunction){
+        try{
+        const id = request.params.id
+        const {value, error} = createCitySchema.validate(request.body)
+        if(error){
+            throw new AppError(error.message,400)
+        }
+        const pointObject: Point = {
+            type:"Point",
+            coordinates: value.location
+        }
+        value.location = pointObject
+        const updatedCity = await this.cityService.update(id, value)
+        response.status(203).json({
+            status: 'success',
+            data: updatedCity
+        })
+        }
+        catch(err){
+            if(err instanceof AppError){
+                response.status(err.statusCode).json({
+                    status: 'fail',
+                    message: err.message
+                })
+            }
+            else{
+                console.log(err)
+                response.status(500).json({
+                    status: 'fail',
+                    err
+                })
+            }
+    }
+}
     async deleteCity(request: Request, response: Response, next: NextFunction){
         try{
         const id = request.params.id

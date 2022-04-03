@@ -41,9 +41,9 @@ export default class CityService{
 
     async create(input: CityInput): Promise<City>{
         try{
-            const existedCity = await this.cityRepository.find({where:[{name:input.name}, {weatherAPI: input.weatherAPI}]});
-            console.log(existedCity)
-            if(existedCity.length > 0) throw new AppError('weatherAPI or name already exists', 400)
+            const existingCity = await this.cityRepository.find({where:[{name:input.name}, {weatherAPI: input.weatherAPI}]});
+            console.log(existingCity)
+            if(existingCity.length > 0) throw new AppError('weatherAPI or name already exists', 400)
             const city =  this.cityRepository.create(input)
             return await this.cityRepository.save(city)
         }
@@ -56,8 +56,20 @@ export default class CityService{
         }
         
     }
-    async update(id: string, ){
-        //to be implemented
+    async update(id: string, input: CityInput): Promise<City>{
+        console.log(input)
+        const existingCity = this.cityRepository.findOne(id)
+        if(!existingCity) throw new AppError(`there is no city of id ${id}`, 400)
+        const existingCitiesWithNameOrWeatherAPI = await this.cityRepository
+        .createQueryBuilder("city")
+        .select()
+        .   where('city.id != :id',{id})
+        .where('city.name =:name', {name: input.name})
+        .orWhere('city.weatherAPI =:api', {api: input.weatherAPI})
+        .getMany()
+        console.log(existingCitiesWithNameOrWeatherAPI)
+        if(existingCitiesWithNameOrWeatherAPI.length > 0) throw new AppError('weatherAPI or name already exists', 400)
+        return await this.cityRepository.save({...input, id:id })
     }
 
     async delete(id: string){
