@@ -4,16 +4,11 @@ import Joi from 'joi';
 import AppError from "../errors/error";
 import AuthService from '../services/auth.service'
 import CityService from "../services/city.service";
+import { validateIdParams } from "../utils/helpers/parameters.validator";
+import { createCitySchema } from "../utils/schemas/city.schema";
 
-const createCitySchema = Joi.object({
-    name: Joi.string().required(),
-    description: Joi.string().required(),
-    rating: Joi.number().min(0).max(5), 
-    location: Joi.array().items(Joi.number().required()).length(2).required(),
-    photos: Joi.array().items(Joi.string().uri()),
-    weatherAPI: Joi.string().uri().required()
 
-})
+
 export class CityController {
     private cityService: CityService
     constructor() {
@@ -44,6 +39,7 @@ export class CityController {
     async findOne(request: Request, response: Response, next: NextFunction){
         try{
         const id = request.params.id
+        validateIdParams(id)
         const city = await this.cityService.findOne(id)
         if(!city) throw new AppError('city not found', 400)
         response.status(200).json({
@@ -102,6 +98,7 @@ export class CityController {
     async updateCity(request: Request, response: Response, next: NextFunction){
         try{
         const id = request.params.id
+        validateIdParams(id)
         const {value, error} = createCitySchema.validate(request.body)
         if(error){
             throw new AppError(error.message,400)
@@ -136,6 +133,7 @@ export class CityController {
     async deleteCity(request: Request, response: Response, next: NextFunction){
         try{
         const id = request.params.id
+        validateIdParams(id)
         await this.cityService.delete(id)
         response.status(204).json({
             status: 'success'

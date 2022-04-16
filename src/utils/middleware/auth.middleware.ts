@@ -25,3 +25,8 @@ export const auth = (request:Request, response: Response, next: NextFunction) =>
           response.status(500).json({ message: 'Failed to authenticate user' });
         }
 };
+
+export const checkPermission = (request:Request, response: Response, next: NextFunction) => {
+
+  
+}
