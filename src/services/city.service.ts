@@ -1,6 +1,6 @@
 import { Point } from "geojson";
 import { getRepository, Repository, TypeORMError } from "typeorm";
-import { CityPhotos } from "../entity/city-photos.entity";
+import { CityPhoto } from "../entity/city-photos.entity";
 import { City } from "../entity/city.entity";
 import AppError from "../errors/error";
 import { CityInput } from "../utils/interfaces/city.interface";
@@ -15,7 +15,7 @@ export default class CityService{
 
     async findAll():Promise<Array<City>>{
         try{
-            return await this.cityRepository.find()
+            return await this.cityRepository.find({relations: ['places', 'photos']})
         }
         catch(err){
             console.log(err)
@@ -25,7 +25,7 @@ export default class CityService{
 
     async findOne(id: string): Promise<City>{
         try{
-            const city = await this.cityRepository.findOne(id)
+            const city = await this.cityRepository.findOne(id,{relations: ['places', 'photos']})
             if(!city) throw new AppError('city is not found', 400)
             return city
         }
@@ -41,9 +41,9 @@ export default class CityService{
 
     async create(input: CityInput): Promise<City>{
         try{
-            const existedCity = await this.cityRepository.find({where:[{name:input.name}, {weatherAPI: input.weatherAPI}]});
-            console.log(existedCity)
-            if(existedCity.length > 0) throw new AppError('weatherAPI or name already exists', 400)
+            const existingCity = await this.cityRepository.find({where:[{name:input.name}, {weatherAPI: input.weatherAPI}]} );
+            console.log(existingCity)
+            if(existingCity.length > 0) throw new AppError('weatherAPI or name already exists', 400)
             const city =  this.cityRepository.create(input)
             return await this.cityRepository.save(city)
         }
@@ -56,8 +56,18 @@ export default class CityService{
         }
         
     }
-    async update(id: string, ){
-        //to be implemented
+    async update(id: string, input: CityInput): Promise<City>{
+        const existingCity = this.cityRepository.findOne(id)
+        if(!existingCity) throw new AppError(`there is no city of id ${id}`, 400)
+        const existingCitiesWithNameOrWeatherAPI = await this.cityRepository
+        .createQueryBuilder("city")
+        .select()
+        .   where('city.id != :id',{id})
+        .where('city.name =:name', {name: input.name})
+        .orWhere('city.weatherAPI =:api', {api: input.weatherAPI})
+        .getMany()
+        if(existingCitiesWithNameOrWeatherAPI.length > 0) throw new AppError('weatherAPI or name already exists', 400)
+        return await this.cityRepository.save({...input, id:id })
     }
 
     async delete(id: string){

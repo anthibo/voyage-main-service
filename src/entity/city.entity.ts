@@ -1,7 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Index, OneToMany,} from "typeorm";
 import { CommonEntity } from "./commonEntity";
 import { Point } from "geojson";
-import { CityPhotos } from "./city-photos.entity";
+import { CityPhoto } from "./city-photos.entity";
+import { Place } from "./place.entity";
 
 
 @Entity('cities')
@@ -40,7 +41,10 @@ export class City extends CommonEntity {
     })
     location!:Point
 
-    @OneToMany(() => CityPhotos, photo => photo.city )
-    photos?: CityPhotos[]
+    @OneToMany(() => CityPhoto, photo => photo.city )
+    photos?: CityPhoto[]
+
+    @OneToMany(() => Place, place => place.city)
+    places: Place[]
     
 }

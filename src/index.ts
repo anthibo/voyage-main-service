@@ -5,9 +5,10 @@ import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 const logger = require('morgan')
 import Router from './routes'
+import { dbConnectionOptions } from "./ormconfig";
 
 const port = process.env.PORT || 3000
-createConnection().then(async connection => {
+createConnection(dbConnectionOptions).then(async connection => {
 
     // create express app
     const app = express();
