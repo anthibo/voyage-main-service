@@ -8,7 +8,7 @@ import Router from './routes'
 import { dbConnectionOptions } from "./ormconfig";
 
 const port = process.env.PORT || 3000
-createConnection(dbConnectionOptions).then(async connection => {
+createConnection().then(async connection => {
 
     // create express app
     const app = express();
