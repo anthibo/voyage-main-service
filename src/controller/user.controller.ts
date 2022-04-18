@@ -1,26 +1,41 @@
-import {getRepository} from "typeorm";
-import {NextFunction, Request, Response} from "express";
-import {User} from "../entity/user.entity";
+import { getRepository } from "typeorm";
+import { NextFunction, Request, Response } from "express";
+import { User } from "../entity/user.entity";
+import UserService from "../services/users.service";
+import AppError from "../errors/error";
 
 export class UserController {
 
-    private userRepository = getRepository(User);
-
-    async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find();
+    private userService: UserService
+    constructor() {
+        this.userService = new UserService();
+        this.getNormalUserDataByToken = this.getNormalUserDataByToken.bind(this)
     }
 
-    async one(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.findOne(request.params.id);
-    }
+    async getNormalUserDataByToken(request: Request, response: Response, next: NextFunction) {
+        try {
+            const {id} = request.user
+            const userData = await this.userService.findNormalUserById(id);
+            response.status(200).json({
+                data: userData
+            })
 
-    async save(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.save(request.body);
-    }
 
-    async remove(request: Request, response: Response, next: NextFunction) {
-        let userToRemove = await this.userRepository.findOne(request.params.id);
-        await this.userRepository.remove(userToRemove);
+        } catch (err) {
+            if (err instanceof AppError) {
+                response.status(err.statusCode).json({
+                    status: 'fail',
+                    message: err.message
+                })
+            }
+            else {
+                console.log(err)
+                response.status(500).json({
+                    status: 'fail',
+                    err
+                })
+            }
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 import { AuthController } from "../controller/auth.controller";
 import { CityController } from "../controller/city.controller";
 import { PlaceController } from "../controller/place.controller";
+import { UserController } from "../controller/user.controller";
 import { auth } from "../utils/middleware/auth.middleware";
 
 const express = require('express');
@@ -14,6 +15,7 @@ export default class Router {
       authController: AuthController
       cityController: CityController
       placeController: PlaceController
+      userController: UserController
 
   };
   constructor() {
@@ -22,7 +24,8 @@ export default class Router {
     this.controllers = {
       authController: new AuthController(),
       cityController: new CityController(),
-      placeController: new PlaceController()
+      placeController: new PlaceController(),
+      userController: new UserController()
     };
   }
 
@@ -36,9 +39,13 @@ export default class Router {
     this.router.post('/auth/register/agency', this.controllers.authController.registerAgency)
     this.router.post('/auth/login/user', this.controllers.authController.loginNormalUser)
     this.router.post('/auth/login/agency', this.controllers.authController.loginAgency)
+  
 
     //Auth Middleware
     this.router.use(this.authMiddleware)
+
+    //user routes
+    this.router.get('/user/me', this.controllers.userController.getNormalUserDataByToken)
 
     // city routes
     this.router.get('/city', this.controllers.cityController.findAllCities)
