@@ -38,7 +38,7 @@ export default class Router {
     this.router.post('/auth/login/agency', this.controllers.authController.loginAgency)
 
     //Auth Middleware
-    //this.router.use(this.authMiddleware)
+    this.router.use(this.authMiddleware)
 
     // city routes
     this.router.get('/city', this.controllers.cityController.findAllCities)

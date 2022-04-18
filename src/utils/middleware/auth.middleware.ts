@@ -6,7 +6,7 @@ export const auth = (request:Request, response: Response, next: NextFunction) =>
         let token = request.headers.authorization;
         if (!token) return response.status(403).json({
             status: 'failed',
-            message: 'Access denied.'
+            message: 'Not authorized to use this api'
         });
         console.log(token)
         if (token.toLowerCase().startsWith('bearer')) {
