@@ -56,7 +56,6 @@ export default class Router {
 
     // places routes
     this.router.get('/place', this.controllers.placeController.findAllPlaces)
-    this.router.get('/city/:id/place', this.controllers.placeController.findCityPlaces)
     this.router.post('/place', this.controllers.placeController.createPlace)
     this.router.get('/place/:id', this.controllers.placeController.findOne)
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
