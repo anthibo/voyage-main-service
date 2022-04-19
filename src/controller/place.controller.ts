@@ -13,7 +13,6 @@ export class PlaceController {
         this.placeService = new PlaceService()
         this.findAllPlaces = this.findAllPlaces.bind(this)
         this.findAllPlaces = this.findAllPlaces.bind(this)
-        this.findCityPlaces = this.findCityPlaces.bind(this)
         this.createPlace = this.createPlace.bind(this)
         this.findOne = this.findOne.bind(this)
         this.deletePlace = this.deletePlace.bind(this)
@@ -33,30 +32,6 @@ export class PlaceController {
         catch (err) {
             console.log(err)
             return response.status(500).json(err)
-        }
-    }
-    async findCityPlaces(request: Request, response: Response, next: NextFunction) {
-        try {
-            const cityId = request.params.id
-            validateIdParams(cityId)
-            const places = this.placeService.findAllCityPlaces(cityId)
-            return response.status(200).json({
-                data: places
-            })
-        } catch (err) {
-            if (err instanceof AppError) {
-                return response.status(err.statusCode).json({
-                    status: 'failed',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                return response.status(500).json({
-                    status: 'failed',
-                    err
-                })
-            }
         }
     }
 
