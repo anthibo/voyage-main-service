@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from 'jsonwebtoken'
-import { DecodedData } from "../interfaces/custom.interface";
 
 export const auth = (request: Request, response: Response, next: NextFunction) => {
   try {
