@@ -1,5 +1,5 @@
 import { Point } from "geojson";
-import { getRepository, Repository, TypeORMError } from "typeorm";
+import { getRepository, Repository, Like } from "typeorm";
 import { CityPhoto } from "../entity/city-photos.entity";
 import { City } from "../entity/city.entity";
 import AppError from "../errors/error";
@@ -13,8 +13,9 @@ export default class CityService{
         this.cityRepository = getRepository(City)
     }
 
-    async findAll():Promise<Array<City>>{
+    async findAll(filters?: any):Promise<Array<City>>{
         try{
+            if(filters.name) return await this.cityRepository.find({relations: ['places', 'photos'], where: {name: Like(`${filters.name}%`)}})
             return await this.cityRepository.find({relations: ['places', 'photos']})
         }
         catch(err){

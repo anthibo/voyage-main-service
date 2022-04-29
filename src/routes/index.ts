@@ -1,6 +1,7 @@
 import { AuthController } from "../controller/auth.controller";
 import { CityController } from "../controller/city.controller";
 import { PlaceController } from "../controller/place.controller";
+import { TransportationController } from "../controller/transportation.controller";
 import { UserController } from "../controller/user.controller";
 import { auth } from "../utils/middleware/auth.middleware";
 
@@ -16,6 +17,7 @@ export default class Router {
       cityController: CityController
       placeController: PlaceController
       userController: UserController
+      transportationController: TransportationController
 
   };
   constructor() {
@@ -25,7 +27,8 @@ export default class Router {
       authController: new AuthController(),
       cityController: new CityController(),
       placeController: new PlaceController(),
-      userController: new UserController()
+      userController: new UserController(),
+      transportationController : new TransportationController()
     };
   }
 
@@ -60,6 +63,17 @@ export default class Router {
     this.router.get('/place/:id', this.controllers.placeController.findOne)
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
     this.router.delete('/place/:id', this.controllers.placeController.deletePlace)
+
+    // transportation means routes
+    this.router.get('/transportationMean', this.controllers.transportationController.findAllTransportationMeans)
+    this.router.post('/transportationMean', this.controllers.transportationController.createTransportationMean)
+    this.router.get('/transportationMean/:id', this.controllers.transportationController.findOneTransportationMean)
+    this.router.patch('/transportationMean/:id', this.controllers.transportationController.updateTransportationMean)
+    this.router.delete('/transportationMean/:id', this.controllers.transportationController.deleteTransportationMean)
+
+
+
+
   
     
   }

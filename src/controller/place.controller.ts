@@ -23,8 +23,8 @@ export class PlaceController {
 
     async findAllPlaces(request: Request, response: Response, next: NextFunction) {
         try {
-            const places = await this.placeService.findAll()
-            console.log(places)
+            const filters = request.query;
+            const places = await this.placeService.findAll(filters)
             return response.status(200).json({
                 data: places
             })

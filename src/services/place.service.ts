@@ -1,5 +1,5 @@
 import { Point } from "geojson";
-import { getRepository, Not, Repository, TypeORMError } from "typeorm";
+import { getRepository, Like, Not, Repository, TypeORMError } from "typeorm";
 import { parseConfigFileTextToJson } from "typescript";
 import { City } from "../entity/city.entity";
 import { Place } from "../entity/place.entity";
@@ -17,13 +17,17 @@ export default class PlaceService {
         this.cityRepository = getRepository(City)
     }
 
-    async findAll(): Promise<Array<Place>> {
-
-        return (await this.placeRepository.find({ relations: ['photos', 'city'] })).map(place => {
-            const returnedCityData = { id: place.city.id, name: place.city.name }
-            place.city = returnedCityData as City
-            return place
-        })
+    async findAll(filters?: any): Promise<Array<Place>> {
+        let places: Place[] = []
+        if (filters.name) {
+            places = (await this.placeRepository.find({ relations: ['photos', 'city'], where: { name: Like(`${filters.name}%`) } }))
+        }
+        else {
+            console.log('no query')
+            console.log(places)
+            places = await this.placeRepository.find({ relations: ['photos', 'city'] })
+        }
+        return places
     }
 
 
