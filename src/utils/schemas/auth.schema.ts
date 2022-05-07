@@ -10,6 +10,16 @@ export const userRegisterSchema = Joi.object({
     phoneNumber: Joi.string(),
     currentCity: Joi.string().uuid()
 })
+export const adminRegisterSchema = Joi.object({
+    email: Joi.string().email().required(),
+    username: Joi.string().required(),
+    password: Joi.string().min(8).required(),
+    confirmPassword: Joi.string().required().valid(Joi.ref('password')),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
+    currentCity: Joi.string().uuid()
+})
 
 export const userLoginSchema = Joi.object({
     email: Joi.string().email(),

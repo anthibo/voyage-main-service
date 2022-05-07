@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
-import AppError from "../errors/error";
+import { OperationalError } from "../utils/helpers/error";
 import CityService from "../services/city.service";
 import TransportationService from "../services/transportation.service";
 import { transportationCityFeesSchema } from "../utils/schemas/transportation.schema";
+import { catcher } from "../utils/schemas/catcher";
 
 export class TransportationController {
     private transportationService: TransportationService
@@ -25,8 +26,7 @@ export class TransportationController {
             })
         }
         catch (err) {
-
-            return response.status(500).json({ err })
+            catcher(err, next)
         }
     }
 
@@ -38,45 +38,22 @@ export class TransportationController {
                 data: transportationMean
             })
         } catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
+
     }
 
     async createTransportationMean(request: Request, response: Response, next: NextFunction) {
         try {
             const { transportationType } = request.body
-            if (!transportationType) throw new AppError('Please insert transportationType', 400)
+            if (!transportationType) throw new OperationalError('Please insert transportationType', 400)
             const transportationMean = await this.transportationService.createTransportationMean(transportationType)
             response.status(201).json({
                 data: transportationMean
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 
@@ -84,25 +61,13 @@ export class TransportationController {
         try {
             const { id } = request.params
             const { transportationType } = request.body
-            if (!transportationType) throw new AppError('Please insert transportationType', 400)
+            if (!transportationType) throw new OperationalError('Please insert transportationType', 400)
             const transportationMean = await this.transportationService.updateTransportationMean(id, transportationType)
             response.status(201).json({
                 data: transportationMean
             })
         } catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 
@@ -115,46 +80,22 @@ export class TransportationController {
             })
 
         } catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
-    
+
     async createTransportationCityFees(request: Request, response: Response, next: NextFunction) {
         try {
 
             const { value, error } = transportationCityFeesSchema.validate(request.body)
-            if (error) throw new AppError(error.message, 400)
+            if (error) throw new OperationalError(error.message, 400)
             const transportationCityFees = await this.transportationService.createCityTransportationFees(value)
             response.status(201).json({
                 data: transportationCityFees
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 

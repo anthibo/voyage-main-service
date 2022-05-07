@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { Point } from "geojson"
-import AppError from "../errors/error";
+import { OperationalError } from "../utils/helpers/error";
 import PlaceService from "../services/place.service";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 import { placeInputSchema } from "../utils/schemas/place.schema";
+import { catcher } from "../utils/schemas/catcher";
 
 
 export class PlaceController {
@@ -30,8 +31,7 @@ export class PlaceController {
             })
         }
         catch (err) {
-            console.log(err)
-            return response.status(500).json(err)
+            catcher(err, next)
         }
     }
 
@@ -39,25 +39,13 @@ export class PlaceController {
         try {
             const id = request.params.id
             const place = await this.placeService.findOne(id)
-            if (!place) throw new AppError('place not found', 400)
+            if (!place) throw new OperationalError('place not found', 400)
             response.status(200).json({
                 data: place
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                return response.status(err.statusCode).json({
-                    status: 'failed',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                return response.status(500).json({
-                    status: 'failed',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 
@@ -65,7 +53,7 @@ export class PlaceController {
         try {
             const { value, error } = placeInputSchema.validate(request.body)
             if (error) {
-                throw new AppError(error.message, 400)
+                throw new OperationalError(error.message, 400)
             }
             const pointObject: Point = {
                 type: "Point",
@@ -79,21 +67,7 @@ export class PlaceController {
             })
         }
         catch (err) {
-            console.log(err)
-            if (err instanceof AppError) {
-                return response.status(err.statusCode).json({
-                    status: 'failed',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                return response.status(500).json({
-                    status: 'failed',
-                    err
-                })
-            }
-
+            catcher(err, next)
         }
     }
     async updatePlace(request: Request, response: Response, next: NextFunction) {
@@ -102,7 +76,7 @@ export class PlaceController {
             validateIdParams(id)
             const { value, error } = placeInputSchema.validate(request.body)
             if (error) {
-                throw new AppError(error.message, 400)
+                throw new OperationalError(error.message, 400)
             }
             const pointObject: Point = {
                 type: "Point",
@@ -116,19 +90,7 @@ export class PlaceController {
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
     async deletePlace(request: Request, response: Response, next: NextFunction) {
@@ -140,20 +102,7 @@ export class PlaceController {
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
-
+            catcher(err, next)
         }
     }
 }

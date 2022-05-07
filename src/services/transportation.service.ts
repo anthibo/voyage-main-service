@@ -2,7 +2,7 @@ import { getRepository, Repository, TypeORMError } from "typeorm";
 import { City } from "../entity/city.entity";
 import { TransportationMeans } from '../entity/transportation-means.entity';
 import { TransportationCityFees } from '../entity/transportation-city-fees.entity';
-import AppError from "../errors/error";
+import {OperationalError} from "../utils/helpers/error";
 import { TransportationCityFeesInput } from "../utils/interfaces/transportation.interface";
 
 
@@ -19,46 +19,40 @@ export default class TransportationService {
     }
 
     async findAllTransportationMeans(): Promise<Array<TransportationMeans>> {
-        try {
             return await this.transportationMeanRepository.find()
-        }
-        catch (err) {
-            console.log(err)
-            throw new Error(err)
-        }
     }
 
     async findOneTransportationMean(id: string): Promise<TransportationMeans> {
         const transportationMean = await this.transportationMeanRepository.findOne(id)
-        if (!transportationMean) throw new AppError('transportation is not found', 400)
+        if (!transportationMean) throw new OperationalError('transportation is not found', 400)
         return transportationMean
     }
 
     async createTransportationMean(transportationType: string): Promise<TransportationMeans> {
         const existingTransportationType = await this.transportationMeanRepository.findOne({ where: { transportationType } })
-        if (existingTransportationType) throw new AppError('this name already exists', 400)
+        if (existingTransportationType) throw new OperationalError('this name already exists', 400)
         const transportationMean = this.transportationMeanRepository.create({ transportationType })
         return await this.transportationMeanRepository.save(transportationMean)
     }
 
     async updateTransportationMean(id: string,transportationType: string): Promise<TransportationMeans> {
         const existingTransportationType = await this.transportationMeanRepository.findOne(id)
-        if (!existingTransportationType) throw new AppError('there is no transportationMean of id '+id, 400)
+        if (!existingTransportationType) throw new OperationalError('there is no transportationMean of id '+id, 400)
         const transportationMean = await this.transportationMeanRepository.save({ ...existingTransportationType,transportationType })
         return transportationMean 
     }
     async deleteTransportationMean(id: string) {
         const existingTransportationType = await this.transportationMeanRepository.findOne(id)
-        if (!existingTransportationType) throw new AppError('there is not transportation mean of id ' + id, 400)
+        if (!existingTransportationType) throw new OperationalError('there is not transportation mean of id ' + id, 400)
         await this.transportationMeanRepository.delete({ id })
     }
 
     async createCityTransportationFees(input: TransportationCityFeesInput){
         const {cityId, transportationMeanId, kmCost} = input
         const transportationMean = await this.transportationMeanRepository.findOne(transportationMeanId)
-        if(!transportationMean) throw new AppError(`transportationMean of id ${transportationMeanId} does not exist`)
+        if(!transportationMean) throw new OperationalError(`transportationMean of id ${transportationMeanId} does not exist`)
         const city = await this.cityRepository.findOne(cityId)
-        if(!city) throw new AppError(`city of id ${transportationMeanId} does not exist`)
+        if(!city) throw new OperationalError(`city of id ${transportationMeanId} does not exist`)
         const transportationCityFees = this.transportationCityFeesRepository.create({
             city,
             transportationMean,

@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Point } from "geojson"
 import Joi from 'joi';
-import AppError from "../errors/error";
+import { OperationalError } from "../utils/helpers/error";
 import AuthService from '../services/auth.service'
 import CityService from "../services/city.service";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 import { createCitySchema } from "../utils/schemas/city.schema";
+import { catcher } from "../utils/schemas/catcher";
 
 
 
@@ -32,8 +33,7 @@ export class CityController {
             })
         }
         catch (err) {
-            console.log(err)
-            return response.status(500).json(err)
+            catcher(err, next)
         }
     }
     async findOne(request: Request, response: Response, next: NextFunction) {
@@ -41,25 +41,13 @@ export class CityController {
             const id = request.params.id
             validateIdParams(id)
             const city = await this.cityService.findOne(id)
-            if (!city) throw new AppError('city not found', 400)
+            if (!city) throw new OperationalError('city not found', 400)
             response.status(200).json({
                 data: city
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                return response.status(err.statusCode).json({
-                    status: 'failed',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                return response.status(500).json({
-                    status: 'failed',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 
@@ -67,7 +55,7 @@ export class CityController {
         try {
             const { value, error } = createCitySchema.validate(request.body)
             if (error) {
-                throw new AppError(error.message, 400)
+                throw new OperationalError(error.message, 400)
             }
             const pointObject: Point = {
                 type: "Point",
@@ -81,19 +69,7 @@ export class CityController {
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                return response.status(err.statusCode).json({
-                    status: 'failed',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                return response.status(500).json({
-                    status: 'failed',
-                    err
-                })
-            }
+            catcher(err, next)
 
         }
     }
@@ -103,7 +79,7 @@ export class CityController {
             validateIdParams(id)
             const { value, error } = createCitySchema.validate(request.body)
             if (error) {
-                throw new AppError(error.message, 400)
+                throw new OperationalError(error.message, 400)
             }
             const pointObject: Point = {
                 type: "Point",
@@ -117,19 +93,7 @@ export class CityController {
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
     async deleteCity(request: Request, response: Response, next: NextFunction) {
@@ -142,20 +106,7 @@ export class CityController {
             })
         }
         catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
-
+            catcher(err, next)
         }
     }
 }

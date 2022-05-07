@@ -2,7 +2,8 @@ import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/user.entity";
 import UserService from "../services/users.service";
-import AppError from "../errors/error";
+import { OperationalError } from "../utils/helpers/error";
+import { catcher } from "../utils/schemas/catcher";
 
 export class UserController {
 
@@ -14,7 +15,7 @@ export class UserController {
 
     async getNormalUserDataByToken(request: Request, response: Response, next: NextFunction) {
         try {
-            const {id} = request.user
+            const { id } = request.user
             const userData = await this.userService.findNormalUserById(id);
             response.status(200).json({
                 data: userData
@@ -22,19 +23,7 @@ export class UserController {
 
 
         } catch (err) {
-            if (err instanceof AppError) {
-                response.status(err.statusCode).json({
-                    status: 'fail',
-                    message: err.message
-                })
-            }
-            else {
-                console.log(err)
-                response.status(500).json({
-                    status: 'fail',
-                    err
-                })
-            }
+            catcher(err, next)
         }
     }
 
