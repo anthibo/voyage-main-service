@@ -3,6 +3,7 @@ import { CommonEntity } from "./commonEntity";
 import { Point } from "geojson";
 import { CityPhoto } from "./city-photos.entity";
 import { Place } from "./place.entity";
+import { TransportationCityFees } from "./transportation-city-fees.entity";
 
 
 @Entity('cities')
@@ -46,5 +47,7 @@ export class City extends CommonEntity {
 
     @OneToMany(() => Place, place => place.city)
     places: Place[]
+    @OneToMany(() => TransportationCityFees, transportationCityFees => transportationCityFees.city)
+    transportationCityFees: TransportationCityFees
     
 }

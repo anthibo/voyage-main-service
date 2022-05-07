@@ -6,6 +6,7 @@ import {Request, Response} from "express";
 const logger = require('morgan')
 import Router from './routes'
 import { dbConnectionOptions } from "./ormconfig";
+import { handleGlobalErrors } from "./utils/middleware/error.middleware";
 
 const port = process.env.PORT || 3000
 createConnection().then(async connection => {
@@ -29,6 +30,7 @@ createConnection().then(async connection => {
         res.send(`healthy`)
     })
     app.use('/api/v1', router.getRoutes())
+    app.use(handleGlobalErrors)
 
     // setup express app here
     // ...

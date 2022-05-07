@@ -18,6 +18,15 @@ export interface BusinessUserInput {
     currentCity?: string;
     phoneNumber?: string
   }
+
+  export interface AdminInput {
+    email : string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    phoneNumber: string
+  }
   export interface LoginInput{
     email: string;
     username: string;

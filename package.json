@@ -15,6 +15,7 @@
       "@types/jsonwebtoken": "^8.5.8",
       "@types/morgan": "^1.9.3",
       "@types/node": "^8.0.29",
+      "aws-sdk": "^2.1127.0",
       "bcryptjs": "^2.4.3",
       "body-parser": "^1.18.1",
       "express": "^4.15.4",
@@ -24,6 +25,7 @@
       "pg": "^8.7.3",
       "reflect-metadata": "^0.1.10",
       "ts-node": "3.3.0",
+      "tslog": "^3.3.3",
       "typeorm": "0.2.41",
       "typescript": "3.3.3333"
    },

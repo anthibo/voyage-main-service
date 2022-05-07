@@ -60,7 +60,7 @@ export class User extends CommonEntity {
             default: UserRole.USER
         }
     )
-    securityRole: UserRole
+    securityRole?: UserRole
 
 
     @BeforeInsert()

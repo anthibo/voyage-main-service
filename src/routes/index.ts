@@ -1,31 +1,32 @@
 import { AuthController } from "../controller/auth.controller";
 import { CityController } from "../controller/city.controller";
 import { PlaceController } from "../controller/place.controller";
+import { TransportationController } from "../controller/transportation.controller";
 import { UserController } from "../controller/user.controller";
-import { auth } from "../utils/middleware/auth.middleware";
+import { auth as authMiddleware, checkPermission } from "../utils/middleware/auth.middleware";
+import {Router as RouterExpress} from 'express';
+import * as express from 'express';
+// const express = require('express');
 
-const express = require('express');
-
-const router = express.Router();
 
 export default class Router {
-  private router: any;
-  private authMiddleware: Function
+  private router: express.Router;
   private controllers: {
       authController: AuthController
       cityController: CityController
       placeController: PlaceController
       userController: UserController
+      transportationController: TransportationController
 
   };
   constructor() {
     this.router = express.Router();
-    this.authMiddleware = auth
     this.controllers = {
       authController: new AuthController(),
       cityController: new CityController(),
       placeController: new PlaceController(),
-      userController: new UserController()
+      userController: new UserController(),
+      transportationController : new TransportationController()
     };
   }
 
@@ -36,20 +37,24 @@ export default class Router {
 
     // auth routes
     this.router.post('/auth/register/user', this.controllers.authController.registerNormalUser)
-    this.router.post('/auth/register/agency', this.controllers.authController.registerAgency)
     this.router.post('/auth/login/user', this.controllers.authController.loginNormalUser)
+
+    this.router.post('/auth/register/agency', this.controllers.authController.registerAgency)
     this.router.post('/auth/login/agency', this.controllers.authController.loginAgency)
+
+    this.router.post('/auth/register/admin', this.controllers.authController.registerAdmin)
+    this.router.post('/auth/login/admin', this.controllers.authController.loginAdmin)
   
 
     //Auth Middleware
-    this.router.use(this.authMiddleware)
+    this.router.use(authMiddleware)
 
     //user routes
     this.router.get('/user/me', this.controllers.userController.getNormalUserDataByToken)
 
     // city routes
-    this.router.get('/city', this.controllers.cityController.findAllCities)
-    this.router.post('/city', this.controllers.cityController.createCity)
+    this.router.get('/city', checkPermission('admin', 'normal_user'),this.controllers.cityController.findAllCities)
+    this.router.post('/city', checkPermission('admin'),  this.controllers.cityController.createCity)
     this.router.get('/city/:id', this.controllers.cityController.findOne)
     this.router.patch('/city/:id', this.controllers.cityController.updateCity)
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
@@ -60,6 +65,17 @@ export default class Router {
     this.router.get('/place/:id', this.controllers.placeController.findOne)
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
     this.router.delete('/place/:id', this.controllers.placeController.deletePlace)
+
+    // transportation means routes
+    this.router.get('/transportationMean', this.controllers.transportationController.findAllTransportationMeans)
+    this.router.post('/transportationMean', this.controllers.transportationController.createTransportationMean)
+    this.router.get('/transportationMean/:id', this.controllers.transportationController.findOneTransportationMean)
+    this.router.patch('/transportationMean/:id', this.controllers.transportationController.updateTransportationMean)
+    this.router.delete('/transportationMean/:id', this.controllers.transportationController.deleteTransportationMean)
+
+
+
+
   
     
   }
