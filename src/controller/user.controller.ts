@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/user.entity";
 import UserService from "../services/users.service";
 import { OperationalError } from "../utils/helpers/error";
-import { catcher } from "../utils/schemas/catcher";
+import { catcher } from "../utils/helpers/catcher";
 
 export class UserController {
 

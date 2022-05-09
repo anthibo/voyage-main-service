@@ -6,7 +6,7 @@ import AuthService from '../services/auth.service'
 import CityService from "../services/city.service";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 import { createCitySchema } from "../utils/schemas/city.schema";
-import { catcher } from "../utils/schemas/catcher";
+import { catcher } from "../utils/helpers/catcher";
 
 
 

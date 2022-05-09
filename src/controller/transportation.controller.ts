@@ -4,7 +4,7 @@ import { OperationalError } from "../utils/helpers/error";
 import CityService from "../services/city.service";
 import TransportationService from "../services/transportation.service";
 import { transportationCityFeesSchema } from "../utils/schemas/transportation.schema";
-import { catcher } from "../utils/schemas/catcher";
+import { catcher } from "../utils/helpers/catcher";
 
 export class TransportationController {
     private transportationService: TransportationService
