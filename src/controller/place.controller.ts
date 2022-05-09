@@ -4,7 +4,7 @@ import { OperationalError } from "../utils/helpers/error";
 import PlaceService from "../services/place.service";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 import { placeInputSchema } from "../utils/schemas/place.schema";
-import { catcher } from "../utils/schemas/catcher";
+import { catcher } from "../utils/helpers/catcher";
 
 
 export class PlaceController {

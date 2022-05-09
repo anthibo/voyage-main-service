@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { OperationalError, NonOperationalError } from "../utils/helpers/error";
 import AuthService from '../services/auth.service'
 import { adminRegisterSchema, agencyRegisterSchema, userLoginSchema, userRegisterSchema } from "../utils/schemas/auth.schema";
-import { catcher } from "../utils/schemas/catcher";
+import { catcher } from "../utils/helpers/catcher";
 
 export class AuthController {
     private authService: AuthService
