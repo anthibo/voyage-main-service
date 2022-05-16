@@ -1,10 +1,13 @@
-import {PrimaryGeneratedColumn, Column} from "typeorm";
+import {PrimaryGeneratedColumn, Column, ManyToOne, Entity} from "typeorm";
+import { User } from "./user.entity";
 
-export abstract class ratingEntity {
+export class RatingEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
     rating!: number;
+
+    
 
 }
