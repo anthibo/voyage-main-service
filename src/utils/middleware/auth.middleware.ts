@@ -9,7 +9,6 @@ export const auth = (request: Request, response: Response, next: NextFunction) =
       status: 'failed',
       message: 'Not authorized to use this api'
     });
-    console.log(token)
     if (token.toLowerCase().startsWith('bearer')) {
       token = token.slice('Bearer'.length).trim();
     }

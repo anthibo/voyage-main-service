@@ -10,22 +10,27 @@ import { catcher } from "../utils/helpers/catcher";
 import CityRatingService from "../services/city-rating.service";
 import { type } from "os";
 import { isNumber } from "util";
+import PhotoService from "../services/photo.service";
+import CityReviewService from "../services/city-reviews.service";
 
 
 
 export class CityController {
     private cityService: CityService
     private cityRatingService: CityRatingService
+    private cityReviewService : CityReviewService
     constructor() {
 
         this.cityService = new CityService()
         this.cityRatingService = new CityRatingService()
+        this.cityReviewService = new CityReviewService()
         this.findAllCities = this.findAllCities.bind(this)
         this.createCity = this.createCity.bind(this)
         this.findOne = this.findOne.bind(this)
         this.deleteCity = this.deleteCity.bind(this)
         this.updateCity = this.updateCity.bind(this)
         this.addRatingToCity = this.addRatingToCity.bind(this)
+        this.addReviewToCity = this.addReviewToCity.bind(this)
 
 
     }
@@ -49,6 +54,7 @@ export class CityController {
             const city = await this.cityService.findOne(id)
             if (!city) throw new OperationalError('city not found', 400)
             const userRating = await this.cityRatingService.getUserRating({destinationId: city.id, userId: request.user.id})
+            await this.cityReviewService.getCityReview(city.id);
             response.status(200).json({
                 data: {...city, userRating}
             })
@@ -133,6 +139,33 @@ export class CityController {
             catcher(err, next)
         }
 
+    }
+    async addReviewToCity(request: Request, response: Response, next: NextFunction) {
+        try{
+
+            const cityId = request.params.id
+            validateIdParams(cityId)
+            const {value, error} = Joi.object({
+                review: Joi.string().required()
+            }).validate(request.body)
+            if(error) throw new OperationalError(error.message, 400)
+            let photos = request.files as Array<any>
+            if(photos.length > 0){
+                photos = photos.map(photo => photo.path)
+                console.log(photos)
+            }
+            if(error) throw new OperationalError(error.message, 400)
+            const {review} = request.body 
+            const cityReview = await this.cityReviewService.addReview({destinationId: cityId, photos, userId: request.user.id, review})
+            console.log(cityReview)
+            response.status(200).json({
+                message: 'added a review successfully',
+            })
+        }
+        catch(err){
+            catcher(err, next)
+
+        }
     }
 
 }

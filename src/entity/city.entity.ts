@@ -1,10 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Index, OneToMany,} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Index, OneToMany, OneToOne,} from "typeorm";
 import { CommonEntity } from "./commonEntity";
 import { Point } from "geojson";
 import { CityPhoto } from "./city-photos.entity";
 import { Place } from "./place.entity";
 import { TransportationCityFees } from "./transportation-city-fees.entity";
 import { CityRating } from "./city-ratings.entity";
+import { CityReview } from "./city-reviews.entity";
 
 
 @Entity('cities')
@@ -55,4 +56,7 @@ export class City extends CommonEntity {
     
     @OneToMany(() => CityRating, cityRating => cityRating.city)
     userRatings: CityRating[]
+
+    @OneToMany(() => CityReview, review => review.city)
+    reviews: CityReview[]
 }

@@ -6,6 +6,8 @@ import { UserController } from "../controller/user.controller";
 import { auth as authMiddleware, checkPermission } from "../utils/middleware/auth.middleware";
 import {Router as RouterExpress} from 'express';
 import * as express from 'express';
+import { upload } from "../utils/helpers/multer";
+import { uploadToCloud } from "../utils/helpers/cloudinary";
 // const express = require('express');
 
 
@@ -44,6 +46,14 @@ export default class Router {
 
     this.router.post('/auth/register/admin', this.controllers.authController.registerAdmin)
     this.router.post('/auth/login/admin', this.controllers.authController.loginAdmin)
+
+    this.router.post('/upload', upload.array('image'), async (req, res) => {
+      const files = req.files as Array<any>
+      console.log(req.files)
+      console.log(typeof files)
+      const response = await uploadToCloud(files[0].path)
+      res.send(response)
+    })
   
 
     //Auth Middleware
@@ -59,6 +69,7 @@ export default class Router {
     this.router.patch('/city/:id', this.controllers.cityController.updateCity)
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
     this.router.post('/city/:id/rating', this.controllers.cityController.addRatingToCity)
+    this.router.post('/city/:id/review', upload.array('image'),this.controllers.cityController.addReviewToCity)
 
     // places routes
     this.router.get('/place', this.controllers.placeController.findAllPlaces)

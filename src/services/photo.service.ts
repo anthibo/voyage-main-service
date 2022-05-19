@@ -1,25 +1,31 @@
-// import { getConnection, getRepository, Repository } from 'typeorm';
-// import { sign } from 'jsonwebtoken'
-// import { User } from '../entity/user.entity';
-// import { SignToken } from '../utils/helpers/auth';
-// import { Agency } from '../entity/agency.entity';
-// import AppError from '../errors/error'
-// import { S3 } from 'aws-sdk'
-// export default class AuthService {
-//     private client: S3;
-//     constructor() {
-//         this.client = new S3(
-//             {
-//                 accessKeyId: process.env.S3_KEY,
-//                 secretAccessKey: process.env.S3_SECRET,
-//                 region: process.env.S3_REGION
-//             })
-//     }
-//     async uploadImage(blob: any) {
-//         const uploadedImage = await this.client.upload({
-//             Bucket: process.env.S3_BUCKET
-//         }).promise()
-//     }
+import { BaseEntity, getRepository, Repository, TypeORMError } from "typeorm";
+import { City } from "../entity/city.entity";
+import { TransportationMeans } from '../entity/transportation-means.entity';
+import { TransportationCityFees } from '../entity/transportation-city-fees.entity';
+import { OperationalError } from "../utils/helpers/error";
+import { TransportationCityFeesInput } from "../utils/interfaces/transportation.interface";
+import { CityRating } from "../entity/city-ratings.entity";
+import { RatingEntity } from "../entity/ratingEntity";
+import { type } from "os";
+import { Place } from "../entity/place.entity";
+import { User } from "../entity/user.entity";
+import { RatingDTO } from "../utils/interfaces/rating.dto";
+import { CityReview } from "../entity/city-reviews.entity";
+import { ReviewDTO } from "../utils/interfaces/review.dto";
+import { uploadToCloud } from "../utils/helpers/cloudinary";
 
 
-// }
+export default class PhotoService {
+    constructor() {
+
+    }
+    async uploadPhotos(photos: string[]) {
+        const photosURLs = [] as Array<string>
+        for (const photo of photos) {
+            const response = await uploadToCloud(photo)
+            photosURLs.push(response.url) 
+        }
+        return photosURLs
+    }
+
+}
