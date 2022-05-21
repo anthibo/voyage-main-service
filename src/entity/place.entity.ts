@@ -3,6 +3,7 @@ import { CommonEntity } from "./commonEntity";
 import { Point } from "geojson";
 import { PlacePhoto } from "./place-photos.entity";
 import { City } from "./city.entity";
+import { PlaceRating } from "./place-ratings.entity";
 
 
 @Entity('places')
@@ -22,7 +23,8 @@ export class Place extends CommonEntity {
     description!: string;
 
     @Column({
-        default: 4
+        default: 4,
+        type: 'float4'
     })
     rating: number;
 
@@ -61,5 +63,8 @@ export class Place extends CommonEntity {
         default: 0
     })
     price: number
+
+    @OneToMany(() => PlaceRating, placeRating => placeRating.place)
+    userRatings: PlaceRating[]
 
 }

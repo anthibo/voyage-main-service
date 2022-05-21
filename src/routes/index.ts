@@ -58,6 +58,7 @@ export default class Router {
     this.router.get('/city/:id', this.controllers.cityController.findOne)
     this.router.patch('/city/:id', this.controllers.cityController.updateCity)
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
+    this.router.post('/city/:id/rating', this.controllers.cityController.addRatingToCity)
 
     // places routes
     this.router.get('/place', this.controllers.placeController.findAllPlaces)
@@ -65,6 +66,8 @@ export default class Router {
     this.router.get('/place/:id', this.controllers.placeController.findOne)
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
     this.router.delete('/place/:id', this.controllers.placeController.deletePlace)
+    this.router.post('/place/:id/rating', this.controllers.placeController.addRatingToPlace)
+
 
     // transportation means routes
     this.router.get('/transportationMean', this.controllers.transportationController.findAllTransportationMeans)

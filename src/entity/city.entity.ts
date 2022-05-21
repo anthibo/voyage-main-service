@@ -4,6 +4,7 @@ import { Point } from "geojson";
 import { CityPhoto } from "./city-photos.entity";
 import { Place } from "./place.entity";
 import { TransportationCityFees } from "./transportation-city-fees.entity";
+import { CityRating } from "./city-ratings.entity";
 
 
 @Entity('cities')
@@ -30,7 +31,8 @@ export class City extends CommonEntity {
     weatherAPI?:string;
 
     @Column({
-        default: 4
+        default: 4,
+        type: 'float4'
     })
     rating: number;
 
@@ -47,7 +49,10 @@ export class City extends CommonEntity {
 
     @OneToMany(() => Place, place => place.city)
     places: Place[]
+
     @OneToMany(() => TransportationCityFees, transportationCityFees => transportationCityFees.city)
     transportationCityFees: TransportationCityFees
     
+    @OneToMany(() => CityRating, cityRating => cityRating.city)
+    userRatings: CityRating[]
 }
