@@ -1,6 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import { CommonEntity } from "./commonEntity";
+import { RatingEntity } from "./ratingEntity";
+import { CityRating } from "./city-ratings.entity";
+import { PlaceRating } from "./place-ratings.entity";
 
 export enum UserRole {
     ADMIN = "admin",
@@ -61,6 +64,13 @@ export class User extends CommonEntity {
         }
     )
     securityRole?: UserRole
+
+    @OneToMany(() => CityRating, rating => rating.user )
+    cityRatings: CityRating[];
+
+    @OneToMany(() => PlaceRating, placeRating => placeRating.user )
+    placeRatings: PlaceRating[];
+    
 
 
     @BeforeInsert()

@@ -7,19 +7,25 @@ import CityService from "../services/city.service";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 import { createCitySchema } from "../utils/schemas/city.schema";
 import { catcher } from "../utils/helpers/catcher";
+import CityRatingService from "../services/city-rating.service";
+import { type } from "os";
+import { isNumber } from "util";
 
 
 
 export class CityController {
     private cityService: CityService
+    private cityRatingService: CityRatingService
     constructor() {
 
         this.cityService = new CityService()
+        this.cityRatingService = new CityRatingService()
         this.findAllCities = this.findAllCities.bind(this)
         this.createCity = this.createCity.bind(this)
         this.findOne = this.findOne.bind(this)
         this.deleteCity = this.deleteCity.bind(this)
         this.updateCity = this.updateCity.bind(this)
+        this.addRatingToCity = this.addRatingToCity.bind(this)
 
 
     }
@@ -42,8 +48,9 @@ export class CityController {
             validateIdParams(id)
             const city = await this.cityService.findOne(id)
             if (!city) throw new OperationalError('city not found', 400)
+            const userRating = await this.cityRatingService.getUserRating({destinationId: city.id, userId: request.user.id})
             response.status(200).json({
-                data: city
+                data: {...city, userRating}
             })
         }
         catch (err) {
@@ -109,4 +116,23 @@ export class CityController {
             catcher(err, next)
         }
     }
+    async addRatingToCity(request: Request, response: Response, next: NextFunction) {
+        try {
+            const cityId = request.params.id
+            validateIdParams(cityId)
+            const { rating } = request.body
+            const {value, error} = Joi.object({
+                rating: Joi.number().required().max(5).min(0)
+            }).validate(request.body)
+            if(error) throw new OperationalError(error.message, 400)
+            const { id: userId } = request.user
+            const res = await this.cityRatingService.addRating({ destinationId: cityId, rating, userId })
+            response.status(200).json({ message: 'added rating successfully' })
+        }
+        catch (err) {
+            catcher(err, next)
+        }
+
+    }
+
 }
