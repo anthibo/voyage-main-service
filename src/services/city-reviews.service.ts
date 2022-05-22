@@ -34,16 +34,15 @@ export default class CityReviewService {
         const city = await this.cityRepository.findOne(destinationId)
         if(!city) throw new OperationalError(`this entity of id ${destinationId} does not exists`)        
         const photosUrls = await this.photoService.uploadPhotos(photos)
-        const cityReview = this.cityReviewRepository.create({
-            city,
-            review,
-            user,
-            photos: photosUrls
-        })
+        const cityReview = new CityReview()
+        cityReview.city = city
+        cityReview.photos = photosUrls
+        cityReview.review = review
+        cityReview.user = user
         const createdReview =  await this.cityReviewRepository.save(cityReview)
         return createdReview
     }
-    async getCityReview(cityId: string){
+    async getCityReviews(cityId: string): Promise<Array<CityReview>>{
         const city = await this.cityRepository.findOne(cityId)
         if(!city) throw new OperationalError(`this entity of id ${cityId} does not exists`)
         const reviews = await this.cityReviewRepository.find({where: {city}})

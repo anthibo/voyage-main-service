@@ -10,16 +10,20 @@ import { type } from "os";
 import { Place } from "../entity/place.entity";
 import { User } from "../entity/user.entity";
 import { RatingDTO } from "../utils/interfaces/rating.dto";
+import { CityReview } from "../entity/city-reviews.entity";
+import CityReviewService from "./city-reviews.service";
 
 
 export default class CityRatingService {
     private cityRepository: Repository<City>
     private cityRatingRepository: Repository<CityRating>;
     private userRepository: Repository<User>;
+    private cityReviewService: CityReviewService
     constructor() {
         this.cityRepository = getRepository(City)
         this.cityRatingRepository = getRepository(CityRating)
         this.userRepository = getRepository(User)
+        this.cityReviewService = new CityReviewService()
 
     }
     async addRating(ratingDTO: RatingDTO) {
@@ -28,9 +32,8 @@ export default class CityRatingService {
         if(!user) throw new OperationalError(`user of id ${userId} does not exists`)
         const city = await this.cityRepository.findOne(destinationId)
         if(!city) throw new OperationalError(`this entity of id ${destinationId} does not exists`)
-        const existingRating = await this.cityRatingRepository.findOne({where: {city: city, user: user}, relations: ['user', 'city']})
+        const existingRating = await this.cityRatingRepository.findOne({where: {city: city, user: user}, relations: ['user', 'city', '']})
         if(existingRating){
-            // update rating
             existingRating.rating = rating
             return await this.cityRatingRepository.save(existingRating);
         }

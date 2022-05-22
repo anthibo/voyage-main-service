@@ -56,7 +56,6 @@ export class CityController {
             const city = await this.cityService.findOne(id)
             if (!city) throw new OperationalError('city not found', 400)
             const userRating = await this.cityRatingService.getUserRating({ destinationId: city.id, userId: request.user.id })
-            await this.cityReviewService.getCityReview(city.id);
             response.status(200).json({
                 data: { ...city, userRating }
             })
