@@ -70,6 +70,8 @@ export default class Router {
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
     this.router.post('/city/:id/rating', this.controllers.cityController.addRatingToCity)
     this.router.post('/city/:id/review', upload.array('image'),this.controllers.cityController.addReviewToCity)
+    this.router.delete('/city/:id/review',this.controllers.cityController.deleteReview)
+
 
     // places routes
     this.router.get('/place', this.controllers.placeController.findAllPlaces)
