@@ -54,13 +54,12 @@ export default class CityReviewService {
 
     }
     //TODO: only admin or user of the rating can delete the rating
-    async deleteReview({destinationId, userId}: RatingDTO) {
+    async deleteReview({id, userId}: ReviewDTO, role: string) {
+        if(role === 'admin' )return await this.cityReviewRepository.delete({id})
         const user = await this.userRepository.findOne(userId)
-        if(!user) throw new OperationalError(`user of id ${userId} does not exists`)
-        const city = await this.cityRepository.findOne(destinationId)
-        if(!city) throw new OperationalError(`this entity of id ${destinationId} does not exists`)
-        const existingRating = await this.cityReviewRepository.findOne({where: {city: city, user: user}})
-        if(!existingRating) throw new OperationalError('this rating does not exist', 400)
-        await this.cityReviewRepository.delete(existingRating.id)
+        const existingReview = await this.cityReviewRepository.findOne({user, id})
+        if(!existingReview) throw new OperationalError(`not authorized to delete this review`)
+        console.log('deleting...')
+        return await this.cityReviewRepository.delete(id)
     }
 }

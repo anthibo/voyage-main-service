@@ -3,8 +3,8 @@ import { City } from "./city.entity";
 import { ReviewsEntity } from "./reviewsEntity";
 import { User } from "./user.entity";
 
-@Entity('city_reviews')
-export class CityReview extends ReviewsEntity {
+@Entity('place_reviews')
+export class PlaceReview extends ReviewsEntity {
     @ManyToOne(() => City, city => city.cityReviews, {
         onDelete: 'CASCADE'
     })

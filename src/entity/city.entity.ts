@@ -57,6 +57,6 @@ export class City extends CommonEntity {
     @OneToMany(() => CityRating, cityRating => cityRating.city)
     userRatings: CityRating[]
 
-    @OneToMany(() => CityReview, review => review.city)
-    reviews: CityReview[]
+    @OneToMany(() => CityReview, cityReview => cityReview.city)
+    cityReviews: CityReview[]
 }

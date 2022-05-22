@@ -12,13 +12,14 @@ import { type } from "os";
 import { isNumber } from "util";
 import PhotoService from "../services/photo.service";
 import CityReviewService from "../services/city-reviews.service";
+import { ReviewDTO } from "../utils/interfaces/review.dto";
 
 
 
 export class CityController {
     private cityService: CityService
     private cityRatingService: CityRatingService
-    private cityReviewService : CityReviewService
+    private cityReviewService: CityReviewService
     constructor() {
 
         this.cityService = new CityService()
@@ -31,6 +32,7 @@ export class CityController {
         this.updateCity = this.updateCity.bind(this)
         this.addRatingToCity = this.addRatingToCity.bind(this)
         this.addReviewToCity = this.addReviewToCity.bind(this)
+        this.deleteReview = this.deleteReview.bind(this)
 
 
     }
@@ -53,10 +55,10 @@ export class CityController {
             validateIdParams(id)
             const city = await this.cityService.findOne(id)
             if (!city) throw new OperationalError('city not found', 400)
-            const userRating = await this.cityRatingService.getUserRating({destinationId: city.id, userId: request.user.id})
+            const userRating = await this.cityRatingService.getUserRating({ destinationId: city.id, userId: request.user.id })
             await this.cityReviewService.getCityReview(city.id);
             response.status(200).json({
-                data: {...city, userRating}
+                data: { ...city, userRating }
             })
         }
         catch (err) {
@@ -127,10 +129,10 @@ export class CityController {
             const cityId = request.params.id
             validateIdParams(cityId)
             const { rating } = request.body
-            const {value, error} = Joi.object({
+            const { value, error } = Joi.object({
                 rating: Joi.number().required().max(5).min(0)
             }).validate(request.body)
-            if(error) throw new OperationalError(error.message, 400)
+            if (error) throw new OperationalError(error.message, 400)
             const { id: userId } = request.user
             const res = await this.cityRatingService.addRating({ destinationId: cityId, rating, userId })
             response.status(200).json({ message: 'added rating successfully' })
@@ -141,31 +143,48 @@ export class CityController {
 
     }
     async addReviewToCity(request: Request, response: Response, next: NextFunction) {
-        try{
+        try {
 
             const cityId = request.params.id
             validateIdParams(cityId)
-            const {value, error} = Joi.object({
+            const { value, error } = Joi.object({
                 review: Joi.string().required()
             }).validate(request.body)
-            if(error) throw new OperationalError(error.message, 400)
+            if (error) throw new OperationalError(error.message, 400)
             let photos = request.files as Array<any>
-            if(photos.length > 0){
+            if (photos.length > 0) {
                 photos = photos.map(photo => photo.path)
                 console.log(photos)
             }
-            if(error) throw new OperationalError(error.message, 400)
-            const {review} = request.body 
-            const cityReview = await this.cityReviewService.addReview({destinationId: cityId, photos, userId: request.user.id, review})
+            if (error) throw new OperationalError(error.message, 400)
+            const { review } = request.body
+            const cityReview = await this.cityReviewService.addReview({ destinationId: cityId, photos, userId: request.user.id, review })
             console.log(cityReview)
             response.status(200).json({
                 message: 'added a review successfully',
             })
         }
-        catch(err){
+        catch (err) {
             catcher(err, next)
 
         }
     }
+    async deleteReview(request: Request, response: Response, next: NextFunction) {
+        try {
+            console.log(request.user.securityRole)
+            const reviewId = request.params.id
+            validateIdParams(reviewId)
+            await this.cityReviewService.deleteReview({userId: request.user.id, id: reviewId} as ReviewDTO, request.user.securityRole)
+            response.status(204).json({
+                status: 'success'
+            })
+        }
+
+        catch (err) {
+            catcher(err, next)
+        }
+
+    }
+
 
 }

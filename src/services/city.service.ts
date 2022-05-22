@@ -19,7 +19,7 @@ export default class CityService {
     }
 
     async findOne(id: string): Promise<City> {
-            const city = await this.cityRepository.findOne(id, { relations: ['places', 'photos'] })
+            const city = await this.cityRepository.findOne(id, { relations: ['places', 'photos', 'cityReviews'] })
             if (!city) throw new OperationalError('city is not found', 400)
             return city
     }
