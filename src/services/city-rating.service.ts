@@ -32,7 +32,7 @@ export default class CityRatingService {
         if(!user) throw new OperationalError(`user of id ${userId} does not exists`)
         const city = await this.cityRepository.findOne(destinationId)
         if(!city) throw new OperationalError(`this entity of id ${destinationId} does not exists`)
-        const existingRating = await this.cityRatingRepository.findOne({where: {city: city, user: user}, relations: ['user', 'city', '']})
+        const existingRating = await this.cityRatingRepository.findOne({where: {city: city, user: user}, relations: ['user', 'city']})
         if(existingRating){
             existingRating.rating = rating
             return await this.cityRatingRepository.save(existingRating);

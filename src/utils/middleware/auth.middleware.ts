@@ -33,6 +33,7 @@ export const auth = (request: Request, response: Response, next: NextFunction) =
 
 export const checkPermission = (...roles: string[]) => {
   return (request: Request, response: Response, next: NextFunction) => {
+    console.log(request.user)
     if (!roles.includes(request.user.securityRole)) {
       return response.status(403).json({
         status: 'failed',
