@@ -7,14 +7,18 @@ import { placeInputSchema } from "../utils/schemas/place.schema";
 import { catcher } from "../utils/helpers/catcher";
 import Joi from "joi";
 import PlaceRatingService from "../services/place-rating.service";
+import { ReviewDTO } from "../utils/interfaces/review.dto";
+import PlaceReviewService from "../services/place-reviews.service";
 
 
 export class PlaceController {
     private placeService: PlaceService
     private placeRatingService: PlaceRatingService
+    private placeReviewService: PlaceReviewService
     constructor() {
 
         this.placeService = new PlaceService()
+        this.placeReviewService = new PlaceReviewService()
         this.placeRatingService = new PlaceRatingService
         this.findAllPlaces = this.findAllPlaces.bind(this)
         this.findAllPlaces = this.findAllPlaces.bind(this)
@@ -23,6 +27,8 @@ export class PlaceController {
         this.deletePlace = this.deletePlace.bind(this)
         this.updatePlace = this.updatePlace.bind(this)
         this.addRatingToPlace = this.addRatingToPlace.bind(this)
+        this.addReviewToPlace = this.addReviewToPlace.bind(this)
+        this.deleteReview = this.deleteReview.bind(this)
     }
 
     async findAllPlaces(request: Request, response: Response, next: NextFunction) {
@@ -122,6 +128,48 @@ export class PlaceController {
             const res = await this.placeRatingService.addRating({ destinationId: placeId, rating, userId })
             response.status(200).json({ message: 'added rating successfully' })
         }
+        catch (err) {
+            catcher(err, next)
+        }
+
+    }
+    async addReviewToPlace(request: Request, response: Response, next: NextFunction) {
+        try {
+
+            const placeId = request.params.id
+            validateIdParams(placeId)
+            const { value, error } = Joi.object({
+                review: Joi.string().required()
+            }).validate(request.body)
+            if (error) throw new OperationalError(error.message, 400)
+            let photos = request.files as Array<any>
+            if (photos.length > 0) {
+                photos = photos.map(photo => photo.path)
+                console.log(photos)
+            }
+            if (error) throw new OperationalError(error.message, 400)
+            const { review } = request.body
+            const cityReview = await this.placeReviewService.addReview({ destinationId: placeId, photos, userId: request.user.id, review })
+            response.status(200).json({
+                message: 'added a review successfully',
+            })
+        }
+        catch (err) {
+            catcher(err, next)
+
+        }
+    }
+    async deleteReview(request: Request, response: Response, next: NextFunction) {
+        try {
+            console.log(request.user.securityRole)
+            const reviewId = request.params.id
+            validateIdParams(reviewId)
+            await this.placeReviewService.deleteReview({userId: request.user.id, id: reviewId} as ReviewDTO, request.user.securityRole)
+            response.status(204).json({
+                status: 'success'
+            })
+        }
+
         catch (err) {
             catcher(err, next)
         }
