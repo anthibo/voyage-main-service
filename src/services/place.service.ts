@@ -32,7 +32,7 @@ export default class PlaceService {
 
 
     async findOne(id: string): Promise<Place> {
-        const place = await this.placeRepository.findOne(id, { relations: ['photos', 'city'] })
+        const place = await this.placeRepository.findOne(id, { relations: ['photos', 'city', 'placeReviews'] })
         if (!place) throw new OperationalError('place is not found', 400)
         const returnedCityData = { id: place.city.id, name: place.city.name }
         place.city = returnedCityData as City

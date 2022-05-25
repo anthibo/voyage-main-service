@@ -80,6 +80,8 @@ export default class Router {
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
     this.router.delete('/place/:id', this.controllers.placeController.deletePlace)
     this.router.post('/place/:id/rating', this.controllers.placeController.addRatingToPlace)
+    this.router.post('/place/:id/review', upload.array('image'),this.controllers.placeController.addReviewToPlace)
+    this.router.delete('/place/:id/review',this.controllers.placeController.deleteReview)
 
 
     // transportation means routes

@@ -2,6 +2,7 @@ import "reflect-metadata";
 import {createConnection} from "typeorm";
 import express from "express";
 import * as bodyParser from "body-parser";
+import cors from 'cors'
 import {Request, Response} from "express";
 const logger = require('morgan')
 import Router from './routes'
@@ -18,6 +19,7 @@ createConnection().then(async connection => {
         app.use(logger('dev'));
       }
     // app middlewares 
+    app.use(cors())
     app.use(bodyParser.json());
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));

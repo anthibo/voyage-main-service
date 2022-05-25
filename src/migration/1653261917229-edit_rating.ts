@@ -9,7 +9,7 @@ export class editRating1653261917229 implements MigrationInterface {
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "review" character varying NOT NULL,
                 "photos" text NOT NULL,
-                "cityId" uuid,
+                "placeId" uuid,
                 "userId" uuid,
                 CONSTRAINT "PK_21653e81a5fc4b599a2509a107d" PRIMARY KEY ("id")
             )
@@ -30,7 +30,7 @@ export class editRating1653261917229 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "place_reviews"
-            ADD CONSTRAINT "FK_3efe82cc0f4fb22bcee017dd355" FOREIGN KEY ("cityId") REFERENCES "cities"("id") ON DELETE CASCADE ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_3efe82cc0f4fb22bcee017dd355" FOREIGN KEY ("placeId") REFERENCES "places"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "place_reviews"
