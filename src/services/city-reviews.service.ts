@@ -45,8 +45,8 @@ export default class CityReviewService {
     async getCityReviews(cityId: string): Promise<Array<CityReview>>{
         const city = await this.cityRepository.findOne(cityId)
         if(!city) throw new OperationalError(`this entity of id ${cityId} does not exists`)
-        const reviews = await this.cityReviewRepository.find({where: {city}})
-        console.log(reviews)
+        let reviews = await this.cityReviewRepository.find({where: {city}, relations: ['user']})
+        reviews = reviews.map(review => ({...review, user: {id: review.user.id, firstName: review.user.firstName, lastName: review.user.lastName}})) as CityReview[]
         return reviews
     }
     async editReview(ratingDTO: ReviewDTO){
