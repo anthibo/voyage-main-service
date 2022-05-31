@@ -2,19 +2,24 @@ import { Point } from "geojson";
 import { getRepository, Like, Not, Repository, TypeORMError } from "typeorm";
 import { parseConfigFileTextToJson } from "typescript";
 import { City } from "../entity/city.entity";
+import { PlaceReview } from "../entity/place-reviews.entity";
 import { Place } from "../entity/place.entity";
 import {OperationalError} from "../utils/helpers/error";
 import { PlaceInput } from "../utils/interfaces/place.interface";
 import CityService from "./city.service";
+import PlaceReviewService from "./place-reviews.service";
 
 
 
 export default class PlaceService {
     private placeRepository: Repository<Place>;
     private cityRepository: Repository<City>
+    private placeReviewsService: PlaceReviewService
     constructor() {
         this.placeRepository = getRepository(Place)
         this.cityRepository = getRepository(City)
+        this.placeReviewsService = new PlaceReviewService()
+
     }
 
     async findAll(filters?: any): Promise<Array<Place>> {
@@ -32,10 +37,12 @@ export default class PlaceService {
 
 
     async findOne(id: string): Promise<Place> {
-        const place = await this.placeRepository.findOne(id, { relations: ['photos', 'city', 'placeReviews'] })
+        const place = await this.placeRepository.findOne(id, { relations: ['photos', 'city'] })
         if (!place) throw new OperationalError('place is not found', 400)
         const returnedCityData = { id: place.city.id, name: place.city.name }
+        const placeReviews = await this.placeReviewsService.getPlaceReviews(place.id)
         place.city = returnedCityData as City
+        place.placeReviews = placeReviews
         return place
     }
 

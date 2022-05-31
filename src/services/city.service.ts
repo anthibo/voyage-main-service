@@ -4,13 +4,16 @@ import { CityPhoto } from "../entity/city-photos.entity";
 import { City } from "../entity/city.entity";
 import { OperationalError } from "../utils/helpers/error";
 import { CityInput } from "../utils/interfaces/city.interface";
+import CityReviewService from "./city-reviews.service";
 
 
 
 export default class CityService {
     private cityRepository: Repository<City>;
+    private cityReviewService: CityReviewService
     constructor() {
         this.cityRepository = getRepository(City)
+        this.cityReviewService = new CityReviewService()
     }
 
     async findAll(filters?: any): Promise<Array<City>> {
@@ -19,8 +22,10 @@ export default class CityService {
     }
 
     async findOne(id: string): Promise<City> {
-            const city = await this.cityRepository.findOne(id, { relations: ['places', 'photos', 'cityReviews'] })
+            const city = await this.cityRepository.findOne(id, { relations: ['places', 'photos'] })
             if (!city) throw new OperationalError('city is not found', 400)
+            const cityReviews = await this.cityReviewService.getCityReviews(city.id)
+            city.cityReviews = cityReviews
             return city
     }
 

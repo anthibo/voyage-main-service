@@ -40,11 +40,11 @@ export default class PlaceReviewService {
         const createdReview =  await this.placeReviewRepository.save(placeReview)
         return createdReview
     }
-    async getPlaceReviews(cityId: string): Promise<Array<PlaceReview>>{
-        const place = await this.placeRepository.findOne(cityId)
-        if(!place) throw new OperationalError(`this entity of id ${cityId} does not exists`)
-        const reviews = await this.placeReviewRepository.find({where: {city: place}})
-        console.log(reviews)
+    async getPlaceReviews(placeId: string): Promise<Array<PlaceReview>>{
+        const place = await this.placeRepository.findOne(placeId)
+        if(!place) throw new OperationalError(`this entity of id ${placeId} does not exists`)
+        let reviews = await this.placeReviewRepository.find({where: {place: place}, relations: ['user']})
+        reviews = reviews.map(review => ({...review, user: {id: review.user.id, firstName: review.user.firstName, lastName: review.user.lastName}})) as PlaceReview[]
         return reviews
     }
     async editReview(ratingDTO: ReviewDTO){
