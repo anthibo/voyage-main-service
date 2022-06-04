@@ -67,9 +67,14 @@ export class PlaceController {
             }
             const pointObject: Point = {
                 type: "Point",
-                coordinates: value.location
+                coordinates: [value.latitude, value.longitude]
+            }
+            let photos = request.files as Array<any>
+            if (photos.length > 0) {
+                photos = photos.map(photo => photo.path)
             }
             value.location = pointObject
+            value.photos = photos
             const createdCity = await this.placeService.create(value)
             response.status(201).json({
                 status: 'success',

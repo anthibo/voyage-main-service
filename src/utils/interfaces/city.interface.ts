@@ -1,5 +1,4 @@
 import { Point } from "geojson"
-import { CityPhoto } from "../../entity/city-photos.entity"
 
 export interface CityInput {
     name: string
@@ -7,6 +6,5 @@ export interface CityInput {
     weatherAPI?: string
     rating?: number
     location: Point
-    photos?: CityPhoto[] 
-    
+    photos?: string[]
 }   

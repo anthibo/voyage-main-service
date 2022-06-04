@@ -67,15 +67,22 @@ export class CityController {
 
     async createCity(request: Request, response: Response, next: NextFunction) {
         try {
+            console.log(request.body)
+            console.log(request.files)
             const { value, error } = createCitySchema.validate(request.body)
             if (error) {
                 throw new OperationalError(error.message, 400)
             }
             const pointObject: Point = {
                 type: "Point",
-                coordinates: value.location
+                coordinates: [value.latitude, value.longitude]
+            }
+            let photos = request.files as Array<any>
+            if (photos.length > 0) {
+                photos = photos.map(photo => photo.path)
             }
             value.location = pointObject
+            value.photos = photos
             const createdCity = await this.cityService.create(value)
             response.status(201).json({
                 status: 'success',
