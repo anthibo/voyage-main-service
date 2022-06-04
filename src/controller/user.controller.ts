@@ -11,6 +11,7 @@ export class UserController {
     constructor() {
         this.userService = new UserService();
         this.getNormalUserDataByToken = this.getNormalUserDataByToken.bind(this)
+        this.listAllUsers = this.listAllUsers.bind(this)
     }
 
     async getNormalUserDataByToken(request: Request, response: Response, next: NextFunction) {
@@ -20,8 +21,17 @@ export class UserController {
             response.status(200).json({
                 data: userData
             })
-
-
+        } catch (err) {
+            catcher(err, next)
+        }
+    }
+    async listAllUsers(request: Request, response: Response, next: NextFunction) {
+        try {
+            const users = await this.userService.findAllUsers();
+            response.status(200).json({
+                users,
+                count: users.length
+            })
         } catch (err) {
             catcher(err, next)
         }
