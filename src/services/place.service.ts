@@ -25,19 +25,19 @@ export default class PlaceService {
     async findAll(filters?: any): Promise<Array<Place>> {
         let places: Place[] = []
         if (filters.name) {
-            places = (await this.placeRepository.find({ relations: ['photos', 'city'], where: { name: Like(`${filters.name}%`) } }))
+            places = (await this.placeRepository.find({ relations: ['city'], where: { name: Like(`${filters.name}%`) } }))
         }
         else {
             console.log('no query')
             console.log(places)
-            places = await this.placeRepository.find({ relations: ['photos', 'city'] })
+            places = await this.placeRepository.find({ relations: ['city'] })
         }
         return places
     }
 
 
     async findOne(id: string): Promise<Place> {
-        const place = await this.placeRepository.findOne(id, { relations: ['photos', 'city'] })
+        const place = await this.placeRepository.findOne(id, { relations: ['city'] })
         if (!place) throw new OperationalError('place is not found', 400)
         const returnedCityData = { id: place.city.id, name: place.city.name }
         const placeReviews = await this.placeReviewsService.getPlaceReviews(place.id)

@@ -28,15 +28,13 @@ export default class CityReviewService {
 
     }
     async addReview(reviewDTO: ReviewDTO) {
-        const {review, destinationId, photos, userId} = reviewDTO
+        const {review, destinationId, userId} = reviewDTO
         const user = await this.userRepository.findOne(userId)
         if(!user) throw new OperationalError(`user of id ${userId} does not exists`)
         const city = await this.cityRepository.findOne(destinationId)
         if(!city) throw new OperationalError(`this entity of id ${destinationId} does not exists`)        
-        const photosUrls = await this.photoService.uploadPhotos(photos)
         const cityReview = new CityReview()
         cityReview.city = city
-        cityReview.photos = photosUrls
         cityReview.review = review
         cityReview.user = user
         const createdReview =  await this.cityReviewRepository.save(cityReview)

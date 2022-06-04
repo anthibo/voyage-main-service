@@ -1,6 +1,5 @@
 import { Point } from "geojson";
 import { getRepository, Repository, Like } from "typeorm";
-import { CityPhoto } from "../entity/city-photos.entity";
 import { City } from "../entity/city.entity";
 import { OperationalError } from "../utils/helpers/error";
 import { CityInput } from "../utils/interfaces/city.interface";
@@ -17,12 +16,12 @@ export default class CityService {
     }
 
     async findAll(filters?: any): Promise<Array<City>> {
-        if (filters.name) return await this.cityRepository.find({ relations: ['places', 'photos'], where: { name: Like(`${filters.name}%`) } })
-        return await this.cityRepository.find({ relations: ['places', 'photos'] })
+        if (filters.name) return await this.cityRepository.find({ relations: ['places'], where: { name: Like(`${filters.name}%`) } })
+        return await this.cityRepository.find({ relations: ['places'] })
     }
 
     async findOne(id: string): Promise<City> {
-            const city = await this.cityRepository.findOne(id, { relations: ['places', 'photos'] })
+            const city = await this.cityRepository.findOne(id, { relations: ['places'] })
             if (!city) throw new OperationalError('city is not found', 400)
             const cityReviews = await this.cityReviewService.getCityReviews(city.id)
             city.cityReviews = cityReviews

@@ -142,14 +142,10 @@ export class PlaceController {
                 review: Joi.string().required()
             }).validate(request.body)
             if (error) throw new OperationalError(error.message, 400)
-            let photos = request.files as Array<any>
-            if (photos.length > 0) {
-                photos = photos.map(photo => photo.path)
-                console.log(photos)
-            }
+          
             if (error) throw new OperationalError(error.message, 400)
             const { review } = request.body
-            const cityReview = await this.placeReviewService.addReview({ destinationId: placeId, photos, userId: request.user.id, review })
+            const cityReview = await this.placeReviewService.addReview({ destinationId: placeId, userId: request.user.id, review })
             response.status(200).json({
                 message: 'added a review successfully',
             })
