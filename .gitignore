@@ -4,5 +4,6 @@ node_modules/
 build/
 tmp/
 temp/
+migration/
 .env
 ormconfig.json
