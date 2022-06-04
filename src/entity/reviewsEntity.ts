@@ -8,8 +8,8 @@ export class ReviewsEntity {
     @Column()
     review!: string;
 
-    @Column({type: 'simple-array'})
-    photos: string[]
+    // @Column({type: 'simple-array'})
+    // photos: string[]
 
     
 

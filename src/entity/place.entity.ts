@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Index, OneToMany, ManyToOne, } from "typeorm";
 import { CommonEntity } from "./commonEntity";
 import { Point } from "geojson";
-import { PlacePhoto } from "./place-photos.entity";
 import { City } from "./city.entity";
 import { PlaceRating } from "./place-ratings.entity";
 import { PlaceReview } from "./place-reviews.entity";
@@ -40,8 +39,8 @@ export class Place extends CommonEntity {
     @ManyToOne(() => City, city => city.places)
     city!: City
 
-    @OneToMany(() => PlacePhoto, photo => photo.place)
-    photos?: PlacePhoto[]
+    @Column({type: 'simple-array'})
+    photos: string[]
 
     @Column({
         unique: true,
