@@ -64,7 +64,7 @@ export default class Router {
 
     // city routes
     this.router.get('/city', checkPermission('admin', 'normal_user'),this.controllers.cityController.findAllCities)
-    this.router.post('/city', checkPermission('admin'),  this.controllers.cityController.createCity)
+    this.router.post('/city', checkPermission('admin'),upload.array('image'), this.controllers.cityController.createCity)
     this.router.get('/city/:id', this.controllers.cityController.findOne)
     this.router.patch('/city/:id', this.controllers.cityController.updateCity)
     this.router.delete('/city/:id', this.controllers.cityController.deleteCity)
@@ -75,7 +75,7 @@ export default class Router {
 
     // places routes
     this.router.get('/place', this.controllers.placeController.findAllPlaces)
-    this.router.post('/place', this.controllers.placeController.createPlace)
+    this.router.post('/place',checkPermission('admin'),upload.array('image'), this.controllers.placeController.createPlace)
     this.router.get('/place/:id', this.controllers.placeController.findOne)
     this.router.patch('/place/:id', this.controllers.placeController.updatePlace)
     this.router.delete('/place/:id', this.controllers.placeController.deletePlace)

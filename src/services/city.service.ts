@@ -4,15 +4,18 @@ import { City } from "../entity/city.entity";
 import { OperationalError } from "../utils/helpers/error";
 import { CityInput } from "../utils/interfaces/city.interface";
 import CityReviewService from "./city-reviews.service";
+import PhotoService from "./photo.service";
 
 
 
 export default class CityService {
     private cityRepository: Repository<City>;
     private cityReviewService: CityReviewService
+    private photoService: PhotoService
     constructor() {
         this.cityRepository = getRepository(City)
         this.cityReviewService = new CityReviewService()
+        this.photoService = new PhotoService()
     }
 
     async findAll(filters?: any): Promise<Array<City>> {
@@ -29,9 +32,10 @@ export default class CityService {
     }
 
     async create(input: CityInput): Promise<City> {
-            const existingCity = await this.cityRepository.find({ where: [{ name: input.name }, { weatherAPI: input.weatherAPI }] });
-            console.log(existingCity)
-            if (existingCity.length > 0) throw new OperationalError('weatherAPI or name already exists', 400)
+            const existingCity = await this.cityRepository.find({ where: [{ name: input.name }] });
+            if (existingCity.length > 0) throw new OperationalError('name already exists', 400)
+            const photosUrls = await this.photoService.uploadPhotos(input.photos)
+            input.photos = photosUrls
             const city = this.cityRepository.create(input)
             return await this.cityRepository.save(city)
     }
@@ -43,9 +47,8 @@ export default class CityService {
             .select()
             .where('city.id != :id', { id })
             .where('city.name =:name', { name: input.name })
-            .orWhere('city.weatherAPI =:api', { api: input.weatherAPI })
             .getMany()
-        if (existingCitiesWithNameOrWeatherAPI.length > 0) throw new OperationalError('weatherAPI or name already exists', 400)
+        if (existingCitiesWithNameOrWeatherAPI.length > 0) throw new OperationalError('name already exists', 400)
         return await this.cityRepository.save({ ...input, id: id })
     }
 

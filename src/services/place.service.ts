@@ -7,6 +7,7 @@ import { Place } from "../entity/place.entity";
 import {OperationalError} from "../utils/helpers/error";
 import { PlaceInput } from "../utils/interfaces/place.interface";
 import CityService from "./city.service";
+import PhotoService from "./photo.service";
 import PlaceReviewService from "./place-reviews.service";
 
 
@@ -15,10 +16,12 @@ export default class PlaceService {
     private placeRepository: Repository<Place>;
     private cityRepository: Repository<City>
     private placeReviewsService: PlaceReviewService
+    private photoService: PhotoService
     constructor() {
         this.placeRepository = getRepository(Place)
         this.cityRepository = getRepository(City)
         this.placeReviewsService = new PlaceReviewService()
+        this.photoService = new PhotoService()
 
     }
 
@@ -52,6 +55,8 @@ export default class PlaceService {
         const city = await this.cityRepository.findOne(input.cityId)
         if (!city) throw new OperationalError(`city of id ${input.cityId} does not exist`)
         delete input.cityId
+        const photosUrls = await this.photoService.uploadPhotos(input.photos)
+        input.photos = photosUrls
         const place = this.placeRepository.create({ ...input, city })
         return await this.placeRepository.save(place)
     }
@@ -65,7 +70,7 @@ export default class PlaceService {
             where: [{ name: input.name }, { website: input.website }, { phoneNumber: input.phoneNumber }]
         })
         existingPlacesWithUniqueData.filter(p => p.id !== existingPlace.id)
-        if (existingPlacesWithUniqueData.length > 0) throw new OperationalError('weatherAPI or name already exists', 400)
+        if (existingPlacesWithUniqueData.length > 0) throw new OperationalError('website or name already exists', 400)
         return await this.placeRepository.save({ ...input, id: id })
     }
 

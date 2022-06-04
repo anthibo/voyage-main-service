@@ -24,13 +24,6 @@ export class City extends CommonEntity {
     description!: string;
 
     @Column({
-        name:'weather_api',
-        unique: true
-
-    })
-    weatherAPI?:string;
-
-    @Column({
         default: 4,
         type: 'float4'
     })
