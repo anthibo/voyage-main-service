@@ -19,4 +19,7 @@ import { BusinessUserInput, LoginInput, NormalUserInput } from '../utils/interfa
         if (!user) throw new OperationalError('this user does not exist', 400)
         return user
     }
+    findAllUsers(){
+        return this.userRepository.find()
+    }
 }

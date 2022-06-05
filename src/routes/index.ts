@@ -61,6 +61,8 @@ export default class Router {
 
     //user routes
     this.router.get('/user/me', this.controllers.userController.getNormalUserDataByToken)
+    this.router.get('/user/', checkPermission('admin'),this.controllers.userController.listAllUsers)
+
 
     // city routes
     this.router.get('/city', checkPermission('admin', 'normal_user'),this.controllers.cityController.findAllCities)
