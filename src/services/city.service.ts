@@ -19,25 +19,30 @@ export default class CityService {
     }
 
     async findAll(filters?: any): Promise<Array<City>> {
-        if (filters.name) return await this.cityRepository.find({ relations: ['places'], where: { name: Like(`${filters.name}%`) } })
-        return await this.cityRepository.find({ relations: ['places'] })
+        let cities = []
+        if (filters.name) cities = await this.cityRepository.find({ relations: ['places'], where: { name: Like(`${filters.name}%`) } })
+        else cities = await this.cityRepository.find({ relations: ['places'] })
+        for (let index = 0; index < cities.length; index++) {
+            cities[index].cityReviews = await this.cityReviewService.getCityReviews(cities[index].id)
+        }
+        return cities
     }
 
     async findOne(id: string): Promise<City> {
-            const city = await this.cityRepository.findOne(id, { relations: ['places'] })
-            if (!city) throw new OperationalError('city is not found', 400)
-            const cityReviews = await this.cityReviewService.getCityReviews(city.id)
-            city.cityReviews = cityReviews
-            return city
+        const city = await this.cityRepository.findOne(id, { relations: ['places'] })
+        if (!city) throw new OperationalError('city is not found', 400)
+        const cityReviews = await this.cityReviewService.getCityReviews(city.id)
+        city.cityReviews = cityReviews
+        return city
     }
 
     async create(input: CityInput): Promise<City> {
-            const existingCity = await this.cityRepository.find({ where: [{ name: input.name }] });
-            if (existingCity.length > 0) throw new OperationalError('name already exists', 400)
-            const photosUrls = await this.photoService.uploadPhotos(input.photos)
-            input.photos = photosUrls
-            const city = this.cityRepository.create(input)
-            return await this.cityRepository.save(city)
+        const existingCity = await this.cityRepository.find({ where: [{ name: input.name }] });
+        if (existingCity.length > 0) throw new OperationalError('name already exists', 400)
+        const photosUrls = await this.photoService.uploadPhotos(input.photos)
+        input.photos = photosUrls
+        const city = this.cityRepository.create(input)
+        return await this.cityRepository.save(city)
     }
     async update(id: string, input: CityInput): Promise<City> {
         const existingCity = this.cityRepository.findOne(id)
