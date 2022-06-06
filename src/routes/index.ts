@@ -8,6 +8,7 @@ import {Router as RouterExpress} from 'express';
 import * as express from 'express';
 import { upload } from "../utils/helpers/multer";
 import { uploadToCloud } from "../utils/helpers/cloudinary";
+import { DashboardController } from "../controller/dashboard.controller";
 // const express = require('express');
 
 
@@ -19,6 +20,7 @@ export default class Router {
       placeController: PlaceController
       userController: UserController
       transportationController: TransportationController
+      dashboardController: DashboardController
 
   };
   constructor() {
@@ -28,7 +30,8 @@ export default class Router {
       cityController: new CityController(),
       placeController: new PlaceController(),
       userController: new UserController(),
-      transportationController : new TransportationController()
+      transportationController : new TransportationController(),
+      dashboardController: new DashboardController()
     };
   }
 
@@ -47,17 +50,13 @@ export default class Router {
     this.router.post('/auth/register/admin', this.controllers.authController.registerAdmin)
     this.router.post('/auth/login/admin', this.controllers.authController.loginAdmin)
 
-    this.router.post('/upload', upload.array('image'), async (req, res) => {
-      const files = req.files as Array<any>
-      console.log(req.files)
-      console.log(typeof files)
-      const response = await uploadToCloud(files[0].path)
-      res.send(response)
-    })
-  
-
+    
+    
     //Auth Middleware
     this.router.use(authMiddleware)
+    
+    //Dashboard routes
+    this.router.get('/dashboard/stats',checkPermission('admin'), this.controllers.dashboardController.getPlaceCityUsersStats)
 
     //user routes
     this.router.get('/user/me', this.controllers.userController.getNormalUserDataByToken)
