@@ -20,6 +20,9 @@ export class Trip extends CommonEntity {
     @ManyToOne(() => City, city => city.cityTrips)
     city: City;
 
+    @Column()
+    name: string
+
     @OneToMany(() => Agenda, agenda => agenda.trip)
     agendas: Agenda[];
 

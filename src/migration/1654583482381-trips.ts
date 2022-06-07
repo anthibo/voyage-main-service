@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class trips1654508491463 implements MigrationInterface {
-    name = 'trips1654508491463'
+export class trips1654583482381 implements MigrationInterface {
+    name = 'trips1654583482381'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -13,6 +13,7 @@ export class trips1654508491463 implements MigrationInterface {
                 "modifiedOn" TIMESTAMP NOT NULL DEFAULT now(),
                 "deletedOn" TIMESTAMP,
                 "id" uuid NOT NULL,
+                "name" character varying NOT NULL,
                 "startDate" TIMESTAMP NOT NULL,
                 "endDate" TIMESTAMP NOT NULL,
                 "type" "public"."trips_type_enum" NOT NULL DEFAULT 'customized',
@@ -37,8 +38,15 @@ export class trips1654508491463 implements MigrationInterface {
                 CONSTRAINT "PK_b98fce419a697b27d700a8aced4" PRIMARY KEY ("agendaId", "placeId")
             )
         `);
-
-            await queryRunner.query(`
+        await queryRunner.query(`
+            ALTER TABLE "places"
+            ALTER COLUMN "photos" DROP DEFAULT
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "cities"
+            ALTER COLUMN "photos" DROP DEFAULT
+        `);
+        await queryRunner.query(`
             ALTER TABLE "trips"
             ADD CONSTRAINT "FK_db768456df45322f8a749534322" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
