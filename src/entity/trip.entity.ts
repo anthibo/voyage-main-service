@@ -23,7 +23,7 @@ export class Trip extends CommonEntity {
     @Column()
     name: string
 
-    @OneToMany(() => Agenda, agenda => agenda.trip)
+    @OneToMany(() => Agenda, agenda => agenda.trip, {cascade: true})
     agendas: Agenda[];
 
     @Column({ type: 'timestamp' })
