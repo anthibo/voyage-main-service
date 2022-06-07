@@ -6,6 +6,7 @@ import { CityRating } from "./city-ratings.entity";
 import { PlaceRating } from "./place-ratings.entity";
 import { CityReview } from "./city-reviews.entity";
 import { PlaceReview } from "./place-reviews.entity";
+import { Trip } from "./trip.entity";
 
 export enum UserRole {
     ADMIN = "admin",
@@ -78,6 +79,9 @@ export class User extends CommonEntity {
 
     @OneToMany(() => PlaceReview, placeReview => placeReview.place)
     placeReviews: PlaceReview
+
+    @OneToMany(() => Trip, userTrip => userTrip.user)
+    userTrips: Trip[];
 
 
     @BeforeInsert()

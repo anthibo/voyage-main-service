@@ -5,6 +5,7 @@ import { Place } from "./place.entity";
 import { TransportationCityFees } from "./transportation-city-fees.entity";
 import { CityRating } from "./city-ratings.entity";
 import { CityReview } from "./city-reviews.entity";
+import { Trip } from "./trip.entity";
 
 
 @Entity('cities')
@@ -52,4 +53,7 @@ export class City extends CommonEntity {
 
     @OneToMany(() => CityReview, cityReview => cityReview.city)
     cityReviews: CityReview[]
+
+    @OneToMany(() => Trip, cityTrip => cityTrip.city)
+    cityTrips: Trip[]
 }
