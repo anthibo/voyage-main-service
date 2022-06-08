@@ -26,10 +26,10 @@ export class Trip extends CommonEntity {
     @OneToMany(() => Agenda, agenda => agenda.trip, {cascade: true})
     agendas: Agenda[];
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'date' })
     startDate: Date;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'date' })
     endDate: Date;
 
     @Column({ type: 'enum', enum: TripType, default: TripType.CUSTOMIZED })
