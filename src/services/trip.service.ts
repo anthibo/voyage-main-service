@@ -5,7 +5,6 @@ import { OperationalError } from '../utils/helpers/error'
 import { Trip, TripType } from '../entity/trip.entity';
 import { City } from '../entity/city.entity';
 import { CustomizedTripDTO } from '../utils/interfaces/trip.dto';
-import { Agenda } from '../entity/agenda.entity';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
@@ -55,16 +54,5 @@ export default class TripService {
         }
         await this.tripRepository.remove(trip);
         return 'Trip deleted';
-    }
-    async createTripAgenda(userId: string, tripId:string){
-        // TODO: create agenda first then assign the agendas to the trip
-        const trip = await this.tripRepository.findOne(tripId);
-        if(trip.user.id !== userId){
-            throw new OperationalError('You are not allowed to access this trip', 403);
-        }
-        const agenda = new Agenda();
-        agenda.trip = trip;
-        return await this.tripRepository.save(agenda);
-
     }
 }

@@ -1,15 +1,15 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class trips1654896448982 implements MigrationInterface {
-    name = 'trips1654896448982'
+export class trips1654896597695 implements MigrationInterface {
+    name = 'trips1654896597695'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            CREATE TABLE "agenda_places" (
+            CREATE TABLE "trip_places" (
                 "isChecked" boolean NOT NULL DEFAULT false,
                 "tripId" uuid NOT NULL,
                 "placeId" uuid NOT NULL,
-                CONSTRAINT "PK_79bc772309290ec5ca67f445be6" PRIMARY KEY ("tripId", "placeId")
+                CONSTRAINT "PK_7cf3a5198fa3ffb1f19e8cef59c" PRIMARY KEY ("tripId", "placeId")
             )
         `);
         await queryRunner.query(`
@@ -31,12 +31,12 @@ export class trips1654896448982 implements MigrationInterface {
             )
         `);
         await queryRunner.query(`
-            ALTER TABLE "agenda_places"
-            ADD CONSTRAINT "FK_410f92b89d1db96da8b9cdb02f5" FOREIGN KEY ("tripId") REFERENCES "trips"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "trip_places"
+            ADD CONSTRAINT "FK_fb23156e37a4fc229a5eac06dbc" FOREIGN KEY ("tripId") REFERENCES "trips"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
-            ALTER TABLE "agenda_places"
-            ADD CONSTRAINT "FK_00f146b4ee9bb0788fc48edbe8e" FOREIGN KEY ("placeId") REFERENCES "places"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "trip_places"
+            ADD CONSTRAINT "FK_186f0ab7752957ea155198915b8" FOREIGN KEY ("placeId") REFERENCES "places"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "trips"
@@ -56,10 +56,10 @@ export class trips1654896448982 implements MigrationInterface {
             ALTER TABLE "trips" DROP CONSTRAINT "FK_db768456df45322f8a749534322"
         `);
         await queryRunner.query(`
-            ALTER TABLE "agenda_places" DROP CONSTRAINT "FK_00f146b4ee9bb0788fc48edbe8e"
+            ALTER TABLE "trip_places" DROP CONSTRAINT "FK_186f0ab7752957ea155198915b8"
         `);
         await queryRunner.query(`
-            ALTER TABLE "agenda_places" DROP CONSTRAINT "FK_410f92b89d1db96da8b9cdb02f5"
+            ALTER TABLE "trip_places" DROP CONSTRAINT "FK_fb23156e37a4fc229a5eac06dbc"
         `);
         await queryRunner.query(`
             DROP TABLE "trips"
@@ -68,7 +68,7 @@ export class trips1654896448982 implements MigrationInterface {
             DROP TYPE "public"."trips_type_enum"
         `);
         await queryRunner.query(`
-            DROP TABLE "agenda_places"
+            DROP TABLE "trip_places"
         `);
     }
 
