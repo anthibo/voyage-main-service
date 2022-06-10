@@ -20,12 +20,6 @@ export default class TripService {
     }
 
     async createCustomizedTrip(input: CustomizedTripDTO, userId: string) {
-        // const trip = new Trip();
-        // trip.startDate = input.startDate;
-        // trip.endDate = input.endDate;
-        // trip.type = TripType.CUSTOMIZED;
-        // trip.city = await this.cityRepository.findOne(input.cityId);
-        // trip.user = await this.userRepository.findOne(userId);
         const trip = this.tripRepository.create({
             name: input.name,
             startDate: input.startDate,
@@ -54,12 +48,13 @@ export default class TripService {
         return {...trip, startDate: moment(trip.startDate).format('DD-MM-YYYY'), endDate: moment(trip.endDate).format('DD-MM-YYYY')};
     }
     async deleteTrip(userId: string, tripId:string){
-        const trip = await this.tripRepository.findOne(tripId);
+        const trip = await this.tripRepository.findOne(tripId, {relations:['user']});
+        if(!trip) throw new OperationalError('Trip not found', 404);
         if(trip.user.id !== userId){
-            throw new OperationalError('You are not allowed to access this trip', 403);
+            throw new OperationalError('You are not allowed to delete this trip', 403);
         }
         await this.tripRepository.remove(trip);
-        return {message: 'Trip deleted'};
+        return 'Trip deleted';
     }
     async createTripAgenda(userId: string, tripId:string){
         // TODO: create agenda first then assign the agendas to the trip

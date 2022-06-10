@@ -28,7 +28,7 @@ export default class PlaceService {
     async findAll(filters?: any): Promise<Array<Place>> {
         let places: Place[] = []
         if (filters.name) {
-            places = (await this.placeRepository.find({ relations: ['city'], where: { name: Like(`${filters.name}%`) } }))
+            places = (await this.placeRepository.find({ relations: ['city'], where: { name: Like(`${filters.name.toLowerCase()}%`) } }))
         }
         else {
             console.log('no query')

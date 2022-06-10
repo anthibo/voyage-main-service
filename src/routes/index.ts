@@ -91,6 +91,8 @@ export default class Router {
     this.router.post('/trip', this.controllers.tripController.createCustomizedTrip)
     this.router.get('/trip', this.controllers.tripController.listAllUserTrips)
     this.router.get('/trip/:tripId', this.controllers.tripController.getTrip)
+    this.router.delete('/trip/:tripId', this.controllers.tripController.deleteTrip)
+
 
 
     // transportation means routes

@@ -20,7 +20,7 @@ export default class CityService {
 
     async findAll(filters?: any): Promise<Array<City>> {
         let cities = []
-        if (filters.name) cities = await this.cityRepository.find({ relations: ['places'], where: { name: Like(`${filters.name}%`) } })
+        if (filters.name) cities = await this.cityRepository.find({ relations: ['places'], where: { name: Like(`${filters.name.toLowerCase()}%`) } })
         else cities = await this.cityRepository.find({ relations: ['places'] })
         for (let index = 0; index < cities.length; index++) {
             cities[index].cityReviews = await this.cityReviewService.getCityReviews(cities[index].id)

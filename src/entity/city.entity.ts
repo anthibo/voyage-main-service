@@ -56,4 +56,9 @@ export class City extends CommonEntity {
 
     @OneToMany(() => Trip, cityTrip => cityTrip.city)
     cityTrips: Trip[]
+
+    @BeforeInsert()
+    async saveSmallCaseName(){
+        this.name = this.name.toLowerCase()
+    }
 }

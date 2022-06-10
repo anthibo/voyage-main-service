@@ -23,13 +23,9 @@ export class CityRating extends RatingEntity {
         const cityId = this.city.id
         let city = await this.cityRepository.findOne(cityId, { relations: ['userRatings'] })
         console.log(this.rating)
-        const rating = city.userRatings.length < 1 ? this.rating
-            :
-            city.userRatings.map(userRate => userRate.rating).reduce((prevRate, currentRate) => prevRate + currentRate, 0) + this.rating / city.userRatings.length + 1
-        city.rating = rating
-        city =  await this.cityRepository.save(city)
-        this.city = city
-
+        const cityRatingsWithoutCurrentUser = city.userRatings.filter(rating => rating.user !== this.user)
+        city.rating = (city.rating * cityRatingsWithoutCurrentUser.length + this.rating) / (cityRatingsWithoutCurrentUser.length + 1)
+        await this.cityRepository.save(city)
     }
     
 }

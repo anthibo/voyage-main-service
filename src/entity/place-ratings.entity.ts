@@ -16,16 +16,13 @@ export class PlaceRating extends RatingEntity {
     @BeforeInsert()
     @BeforeUpdate()
     //TODO: fix update rating algo
-    private async updateCityRating() {
+    private async updatePlaceRating() {
         const cityId = this.place.id
         let place = await this.placeRepository.findOne(cityId, { relations: ['userRatings'] })
         console.log(this.rating)
-        const rating = place.userRatings.length < 1 ? this.rating
-            :
-            place.userRatings.map(userRate => userRate.rating).reduce((prevRate, currentRate) => prevRate + currentRate, 0) + this.rating / place.userRatings.length + 1
-        place.rating = rating
-        place =  await this.placeRepository.save(place)
-        this.place = place
+        const placeRatingsWithoutCurrentUser = place.userRatings.filter(rating => rating.user !== this.user)
+        place.rating = (place.rating * placeRatingsWithoutCurrentUser.length + this.rating) / (placeRatingsWithoutCurrentUser.length + 1)
+        await this.placeRepository.save(place)
 
     }
 }

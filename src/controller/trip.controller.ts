@@ -18,6 +18,7 @@ export class TripController {
         this.tripService = new TripService()
         this.createCustomizedTrip = this.createCustomizedTrip.bind(this)
         this.getTrip = this.getTrip.bind(this)
+        this.deleteTrip = this.deleteTrip.bind(this)
     }
 
     async listAllUserTrips(req: Request, res: Response, next: NextFunction) {
@@ -46,6 +47,16 @@ export class TripController {
             validateIdParams(req.params.tripId);
             const trip = await this.tripService.getTrip(req.user.id, req.params.tripId)
             res.json(trip)
+        }
+        catch(err){
+            catcher(err, next)
+        }
+    }
+    async deleteTrip(req: Request, res: Response, next: NextFunction) {
+        try{
+            validateIdParams(req.params.tripId);
+            const message = await this.tripService.deleteTrip(req.user.id, req.params.tripId)
+            res.json({message})
         }
         catch(err){
             catcher(err, next)
