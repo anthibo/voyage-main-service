@@ -40,7 +40,7 @@ export default class TripService {
         return this.tripRepository.find({user});
     }
     async getTrip(userId: string, tripId:string){
-        const trip = await this.tripRepository.findOne(tripId, {relations:['city','user', 'agendas']});
+        const trip = await this.tripRepository.findOne(tripId, {relations:['city','user', 'tripPlaces']});
         if(trip.user.id !== userId){
             throw new OperationalError('You are not allowed to access this trip', 403);
         }
