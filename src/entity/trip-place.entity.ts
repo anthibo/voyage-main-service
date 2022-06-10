@@ -7,7 +7,7 @@ import { Trip } from "./trip.entity";
 import { User } from "./user.entity";
 
 
-@Entity('agenda_places')
+@Entity('trip_places')
 export class TripPlace{
   @ManyToOne(() => Trip,  { primary: true })
   public trip!: Trip;
