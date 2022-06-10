@@ -6,7 +6,4 @@ export class RatingEntity {
 
     @Column({type: 'float'})
     rating!: number;
-
-    
-
 }

@@ -70,4 +70,9 @@ export class Place extends CommonEntity {
     @OneToMany(() => PlaceReview, placeReview => placeReview.place)
     placeReviews: PlaceReview[]
 
+    @BeforeInsert()
+    async saveSmallCaseName(){
+        this.name = this.name.toLowerCase()
+    }
+
 }

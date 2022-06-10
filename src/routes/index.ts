@@ -9,6 +9,7 @@ import * as express from 'express';
 import { upload } from "../utils/helpers/multer";
 import { uploadToCloud } from "../utils/helpers/cloudinary";
 import { DashboardController } from "../controller/dashboard.controller";
+import { TripController } from "../controller/trip.controller";
 // const express = require('express');
 
 
@@ -20,7 +21,8 @@ export default class Router {
       placeController: PlaceController
       userController: UserController
       transportationController: TransportationController
-      dashboardController: DashboardController
+      dashboardController: DashboardController,
+      tripController: TripController
 
   };
   constructor() {
@@ -31,7 +33,8 @@ export default class Router {
       placeController: new PlaceController(),
       userController: new UserController(),
       transportationController : new TransportationController(),
-      dashboardController: new DashboardController()
+      dashboardController: new DashboardController(),
+      tripController: new TripController()
     };
   }
 
@@ -83,6 +86,13 @@ export default class Router {
     this.router.post('/place/:id/rating', this.controllers.placeController.addRatingToPlace)
     this.router.post('/place/:id/review', upload.array('image'),this.controllers.placeController.addReviewToPlace)
     this.router.delete('/place/:id/review',this.controllers.placeController.deleteReview)
+
+    //trips routes
+    this.router.post('/trip', this.controllers.tripController.createCustomizedTrip)
+    this.router.get('/trip', this.controllers.tripController.listAllUserTrips)
+    this.router.get('/trip/:tripId', this.controllers.tripController.getTrip)
+    this.router.delete('/trip/:tripId', this.controllers.tripController.deleteTrip)
+
 
 
     // transportation means routes
