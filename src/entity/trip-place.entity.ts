@@ -1,5 +1,4 @@
 import { Entity, getRepository, Column, ManyToOne, BeforeInsert, BeforeUpdate, AfterInsert, AfterUpdate, AfterRemove, BaseEntity, PrimaryColumn, OneToMany, OneToOne, JoinColumn } from "typeorm";
-import { Agenda } from "./agenda.entity";
 import { City } from "./city.entity";
 import { CommonEntity } from "./commonEntity";
 import { Place } from "./place.entity";
@@ -9,9 +8,9 @@ import { User } from "./user.entity";
 
 
 @Entity('agenda_places')
-export class AgendaPlace{
-  @ManyToOne(() => Agenda,  { primary: true })
-  public agenda!: Agenda;
+export class TripPlace{
+  @ManyToOne(() => Trip,  { primary: true })
+  public trip!: Trip;
 
   @ManyToOne(() => Place,  { primary: true })
   public place!: Place;

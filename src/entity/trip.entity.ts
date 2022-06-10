@@ -1,8 +1,8 @@
 import { Entity, getRepository, Column, ManyToOne, BeforeInsert, BeforeUpdate, AfterInsert, AfterUpdate, AfterRemove, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
-import { Agenda } from "./agenda.entity";
 import { City } from "./city.entity";
 import { CommonEntity } from "./commonEntity";
 import { RatingEntity } from "./ratingEntity";
+import { TripPlace } from "./trip-place.entity";
 import { User } from "./user.entity";
 
 export enum TripType{
@@ -23,8 +23,8 @@ export class Trip extends CommonEntity {
     @Column()
     name: string
 
-    @OneToMany(() => Agenda, agenda => agenda.trip, {cascade: true})
-    agendas: Agenda[];
+    @OneToMany(() => TripPlace, tripPlace => tripPlace.trip, {cascade: true})
+    tripPlaces: TripPlace[];
 
     @Column({ type: 'date' })
     startDate: Date;
