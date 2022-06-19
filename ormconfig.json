@@ -16,6 +16,12 @@
    "migrations": [
       "src/migration/**/*.ts"
    ],
+   "seeds": [
+      "src/seed/seeders/*.seeder.ts"
+   ],
+   "factories":[
+      "src/seed/factory/*.factory.ts"
+   ],
    "subscribers": [
       "src/subscriber/**/*.ts"
    ],

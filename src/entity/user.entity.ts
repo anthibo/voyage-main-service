@@ -39,7 +39,7 @@ export class User extends CommonEntity {
     username!: string
 
     @Column()
-    private password!: string
+    password!: string
 
     @Column({
         unique: true

@@ -7,3 +7,6 @@ export const createCustomizedTripSchema = Joi.object({
     endDate: Joi.date().required(),
 }
 )
+export const placeTripSchema = Joi.object({
+    placeId: Joi.string().uuid().required(),
+})

@@ -89,9 +89,15 @@ export default class Router {
 
     //trips routes
     this.router.post('/trip', this.controllers.tripController.createCustomizedTrip)
+    this.router.patch('/trip/:tripId', this.controllers.tripController.updateCustomizedTrip)
     this.router.get('/trip', this.controllers.tripController.listAllUserTrips)
     this.router.get('/trip/:tripId', this.controllers.tripController.getTrip)
+    this.router.get('/trip/place/:placeId', this.controllers.tripController.listNotAddedPlaceTrips)
     this.router.delete('/trip/:tripId', this.controllers.tripController.deleteTrip)
+    this.router.post('/trip/:tripId/place', this.controllers.tripController.addPlaceToTrip)
+    this.router.delete('/trip/:tripId/place/:placeId', this.controllers.tripController.deletePlaceFromTrip)
+    
+
 
 
 
@@ -101,6 +107,8 @@ export default class Router {
     this.router.get('/transportationMean/:id', this.controllers.transportationController.findOneTransportationMean)
     this.router.patch('/transportationMean/:id', this.controllers.transportationController.updateTransportationMean)
     this.router.delete('/transportationMean/:id', this.controllers.transportationController.deleteTransportationMean)
+    this.router.post('/transportationMean/:id', this.controllers.transportationController.deleteTransportationMean)
+
 
 
 
