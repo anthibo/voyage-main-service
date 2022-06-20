@@ -6,12 +6,13 @@ import { User } from "./user.entity";
 @Entity('city_reviews')
 export class CityReview extends ReviewsEntity {
     @ManyToOne(() => City, city => city.cityReviews, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
     })
     city!: City
 
     @ManyToOne(() => User, user => user.cityReviews, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
+        eager: true
     })
     user: User
     

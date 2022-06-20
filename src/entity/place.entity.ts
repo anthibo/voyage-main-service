@@ -67,7 +67,7 @@ export class Place extends CommonEntity {
     @OneToMany(() => PlaceRating, placeRating => placeRating.place)
     userRatings: PlaceRating[]
 
-    @OneToMany(() => PlaceReview, placeReview => placeReview.place)
+    @OneToMany(() => PlaceReview, placeReview => placeReview.place, {eager: true})
     placeReviews: PlaceReview[]
 
     @BeforeInsert()
@@ -76,3 +76,4 @@ export class Place extends CommonEntity {
     }
 
 }
+    
