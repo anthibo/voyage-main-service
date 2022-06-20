@@ -61,6 +61,7 @@ export default class TripService {
     }
     async getTrip(userId: string, tripId: string) {
         const trip = await this.tripRepository.findOne(tripId, { relations: ['user'] });
+        if(!trip) throw new OperationalError('Trip not found', 404);
         if (trip.user.id !== userId) {
             throw new OperationalError('You are not allowed to access this trip', 403);
         }
