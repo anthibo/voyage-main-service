@@ -61,6 +61,7 @@ export default class TripService {
     }
     async getTrip(userId: string, tripId: string) {
         const trip = await this.tripRepository.findOne(tripId, { relations: ['user'] });
+        if(!trip) throw new OperationalError('Trip not found', 404);
         if (trip.user.id !== userId) {
             throw new OperationalError('You are not allowed to access this trip', 403);
         }
@@ -77,9 +78,9 @@ export default class TripService {
         // .andWhere('trip_places.placeId = :placeId', { placeId })
         // .getMany()
         const place = await this.placeRepository.findOne(placeId);
-        const trips = await this.tripRepository.find({select: ['id', 'name'], relations: ['tripPlaces'], where: {user: {id: userId}}})
-        
-        console.log(trips)
+        let trips = await this.tripRepository.find({select: ['id', 'name'], relations: ['tripPlaces, places'], where: {user: {id: userId}}})
+        console.log(trips[0].tripPlaces)
+        trips = trips.filter(trip => !trip.tripPlaces.find(tripPlace => tripPlace.place.id === placeId))
         return trips
     }
     async deleteTrip(userId: string, tripId: string) {

@@ -1,9 +1,11 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
+import { createConnection } from "typeorm";
 import express from "express";
+import { createServer } from "http";
 import * as bodyParser from "body-parser";
+import { Server } from 'socket.io';
 import cors from 'cors'
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 const logger = require('morgan')
 import Router from './routes'
 import { dbConnectionOptions } from "./ormconfig";
@@ -11,13 +13,18 @@ import { handleGlobalErrors } from "./utils/middleware/error.middleware";
 
 const port = process.env.PORT || 3000
 createConnection().then(async connection => {
+    const app = express();
+
+
+    const httpServer = createServer(app)
+
+    const io = new Server(httpServer, {})
 
     // create express app
-    const app = express();
 
     if (process.env.NODE_ENV !== 'test') {
         app.use(logger('dev'));
-      }
+    }
     // app middlewares 
     app.use(cors())
     app.use(bodyParser.json());
@@ -36,9 +43,22 @@ createConnection().then(async connection => {
 
     // setup express app here
     // ...
+    io.on('connection', (socket) => {
+        console.log('a user connected')
+        socket.emit('de7k', {message: 'a user is presenting de7k'})
+        socket.on('de7k', (data) => {
+            console.log(data)
+            socket.emit('user ezayek', 'ezayek')
+        })
+        socket.on('disconnect', () => {
+            console.log('user disconnected')
+        })
+        
+    })
+   
 
     // start express server
-    app.listen(port);
+    httpServer.listen(port);
 
     console.log("Server has started");
 

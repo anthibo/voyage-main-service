@@ -12,7 +12,8 @@ export class PlaceReview extends ReviewsEntity {
     place!: Place
 
     @ManyToOne(() => User, user => user.placeReviews, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
+        eager: true
     })
     user: User
     

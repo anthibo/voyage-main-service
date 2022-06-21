@@ -31,13 +31,11 @@ export default class PlaceService {
             places = (await this.placeRepository.find({ relations: ['city'], where: { name: Like(`${filters.name.toLowerCase()}%`) } }))
         }
         else {
-            console.log('no query')
-            console.log(places)
             places = await this.placeRepository.find({ relations: ['city'] })
         }
-        for (let index = 0; index < places.length; index++) {
-            places[index].placeReviews = await this.placeReviewsService.getPlaceReviews(places[index].id)
-        }
+        // for (let index = 0; index < places.length; index++) {
+        //     places[index].placeReviews = await this.placeReviewsService.getPlaceReviews(places[index].id)
+        // }
         return places
     }
 
