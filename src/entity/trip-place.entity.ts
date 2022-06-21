@@ -9,8 +9,6 @@ import { User } from "./user.entity";
 
 @Entity('trip_places')
 export class TripPlace{
-  @PrimaryColumn('uuid')
-  id: string;
   
   @ManyToOne(() => Trip,  { primary: true })
   public trip!: Trip;
