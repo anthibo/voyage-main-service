@@ -18,7 +18,7 @@ createConnection().then(async connection => {
 
     const httpServer = createServer(app)
 
-    const io = new Server(httpServer, {})
+    const io = new Server(httpServer, { cors: { origin: "*" } })
 
     // create express app
 
@@ -43,19 +43,35 @@ createConnection().then(async connection => {
 
     // setup express app here
     // ...
+    app.set('socketIO', io)
+
     io.on('connection', (socket) => {
         console.log('a user connected')
-        socket.emit('de7k', {message: 'a user is presenting de7k'})
-        socket.on('de7k', (data) => {
-            console.log(data)
-            socket.emit('user ezayek', 'ezayek')
+        socket.on('joinPlaceRoom', (placeId) => {
+            console.log('user joined place ' + placeId)
+            socket.join(`place-${placeId}`)
         })
+        socket.on('leavePlaceRoom', (placeId) => {
+            console.log('user leaved place ' + placeId)
+            socket.leave(`place-${placeId}`)
+        })
+
+        socket.on('joinCityRoom', (cityId) => {
+            console.log('user joined city ' + cityId)
+            socket.join(`city-${cityId}`)
+        })
+        socket.on('leaveCityRoom', (cityId) => {
+            console.log('user leaved city ' + cityId)
+            socket.leave(`city-${cityId}`)
+        })
+
         socket.on('disconnect', () => {
             console.log('user disconnected')
         })
-        
+
     })
-   
+
+
 
     // start express server
     httpServer.listen(port);
