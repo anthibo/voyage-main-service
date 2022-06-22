@@ -9,6 +9,7 @@ import Joi from "joi";
 import PlaceRatingService from "../services/place-rating.service";
 import { ReviewDTO } from "../utils/interfaces/review.dto";
 import PlaceReviewService from "../services/place-reviews.service";
+import { Server } from "socket.io";
 
 
 export class PlaceController {
@@ -150,7 +151,12 @@ export class PlaceController {
           
             if (error) throw new OperationalError(error.message, 400)
             const { review } = request.body
-            const cityReview = await this.placeReviewService.addReview({ destinationId: placeId, userId: request.user.id, review })
+            const placeReview = await this.placeReviewService.addReview({ destinationId: placeId, userId: request.user.id, review })
+            const io = request.app.get('socketIO') as Server
+            io.to(`place-${placeId}`).emit('place-review:added', {
+                placeId,
+                review: placeReview
+            })
             response.status(200).json({
                 message: 'added a review successfully',
             })

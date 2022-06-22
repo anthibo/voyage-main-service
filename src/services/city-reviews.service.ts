@@ -38,7 +38,16 @@ export default class CityReviewService {
         cityReview.review = review
         cityReview.user = user
         const createdReview =  await this.cityReviewRepository.save(cityReview)
-        return createdReview
+        const returnedReview = {
+            id: createdReview.id,
+            user:{
+                id: createdReview.user.id,
+                firstName: createdReview.user.firstName,
+                lastName: createdReview.user.lastName,
+            },
+            review: createdReview.review,
+        }
+        return returnedReview
     }
     async getCityReviews(cityId: string): Promise<Array<CityReview>>{
         const city = await this.cityRepository.findOne(cityId)

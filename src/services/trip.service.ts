@@ -78,9 +78,9 @@ export default class TripService {
         // .andWhere('trip_places.placeId = :placeId', { placeId })
         // .getMany()
         const place = await this.placeRepository.findOne(placeId);
-        let trips = await this.tripRepository.find({select: ['id', 'name'], relations: ['tripPlaces, places'], where: {user: {id: userId}}})
+        let trips = await this.tripRepository.find({select: ['id', 'name'], relations: ['tripPlaces'], where: {user: {id: userId}}})
         console.log(trips[0].tripPlaces)
-        trips = trips.filter(trip => !trip.tripPlaces.find(tripPlace => tripPlace.place.id === placeId))
+        // trips = trips.filter(trip => !trip.tripPlaces.find(tripPlace => tripPlace.place.id === placeId))
         return trips
     }
     async deleteTrip(userId: string, tripId: string) {

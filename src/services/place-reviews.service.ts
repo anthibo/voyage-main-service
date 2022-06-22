@@ -36,7 +36,16 @@ export default class PlaceReviewService {
         placeReview.review = review
         placeReview.user = user
         const createdReview =  await this.placeReviewRepository.save(placeReview)
-        return createdReview
+        const returnedReview = {
+            id: createdReview.id,
+            user:{
+                id: createdReview.user.id,
+                firstName: createdReview.user.firstName,
+                lastName: createdReview.user.lastName,
+            },
+            review: createdReview.review,
+        }
+        return returnedReview
     }
     async getPlaceReviews(placeId: string): Promise<Array<PlaceReview>>{
         const place = await this.placeRepository.findOne(placeId)

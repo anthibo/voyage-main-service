@@ -13,6 +13,7 @@ import { isNumber } from "util";
 import PhotoService from "../services/photo.service";
 import CityReviewService from "../services/city-reviews.service";
 import { ReviewDTO } from "../utils/interfaces/review.dto";
+import { Server } from "socket.io";
 
 
 
@@ -160,7 +161,11 @@ export class CityController {
             if (error) throw new OperationalError(error.message, 400)
             const { review } = request.body
             const cityReview = await this.cityReviewService.addReview({ destinationId: cityId, userId: request.user.id, review })
-            console.log(cityReview)
+            const io = request.app.get('socketIO') as Server
+            io.to(`city-${cityId}`).emit('city-review:added', {
+                cityId,
+                review: cityReview
+            })
             response.status(200).json({
                 message: 'added a review successfully',
             })
