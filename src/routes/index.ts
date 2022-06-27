@@ -96,6 +96,8 @@ export default class Router {
     this.router.delete('/trip/:tripId', this.controllers.tripController.deleteTrip)
     this.router.post('/trip/:tripId/place', this.controllers.tripController.addPlaceToTrip)
     this.router.delete('/trip/:tripId/place/:placeId', this.controllers.tripController.deletePlaceFromTrip)
+    this.router.post('/trip/generate', this.controllers.tripController.createGeneratedTrips)
+
     
 
 

@@ -5,3 +5,10 @@ export interface CustomizedTripDTO{
     name: string;
 
 }
+export interface GeneratedTripDTO{
+    noOfDays: number;
+    activities: string[];
+    cityId: string;
+    name: string;
+
+}

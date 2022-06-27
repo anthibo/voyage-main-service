@@ -4,7 +4,7 @@ import { User } from '../entity/user.entity';
 import { OperationalError } from '../utils/helpers/error'
 import { Trip, TripType } from '../entity/trip.entity';
 import { City } from '../entity/city.entity';
-import { CustomizedTripDTO } from '../utils/interfaces/trip.dto';
+import { CustomizedTripDTO, GeneratedTripDTO } from '../utils/interfaces/trip.dto';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import { Place } from '../entity/place.entity';
@@ -134,5 +134,21 @@ export default class TripService {
         if (!tripPlace) throw new OperationalError('Place not found in trip', 404);
         await this.tripPlacesRepository.remove(tripPlace);
         return 'Place deleted from trip';
+    }
+    async generateTrip(userId: string, input:GeneratedTripDTO){
+        const activityTypes = input.activities.map((activityType) => ({activityType}));
+        console.log(activityTypes);
+        const numberOfPlaces= input.noOfDays * 3
+        const activityPlaces = await this.placeRepository.find({where: activityTypes, order: {rating: 'DESC'}})
+        console.log(activityPlaces)
+        return {
+            user: userId,
+            name: input.name,
+            day1: ['Alexandria Library', 'Citadel'],
+            activityPlaces
+        }
+    }
+    async saveGeneratedTrip(generatedTrip){
+
     }
 }
