@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import { Place } from '../entity/place.entity';
 import { TripPlace } from '../entity/trip-place.entity';
-import { not } from 'joi';
+import { not, number } from 'joi';
 
 export default class TripService {
     private userRepository: Repository<User>;
@@ -136,16 +136,23 @@ export default class TripService {
         return 'Place deleted from trip';
     }
     async generateTrip(userId: string, input:GeneratedTripDTO){
-        const activityTypes = input.activities.map((activityType) => ({activityType}));
-        console.log(activityTypes);
-        const numberOfPlaces= input.noOfDays * 3
-        const activityPlaces = await this.placeRepository.find({where: activityTypes, order: {rating: 'DESC'}})
-        console.log(activityPlaces)
+        const {activities, cityId, name, noOfDays} = input
+        const activityTypes = activities.map((activityType) => ({activityType}));
+        const city = await this.cityRepository.findOne(cityId)
+        if(!city) throw new OperationalError('City not found', 404)
+        const numberOfPlaces= noOfDays * 3
+        const takenNoOfPlacesPerActivity = numberOfPlaces / activities.length
+        const places = []
+        for(const activity of activities){
+            const activityPlaces = await this.placeRepository.find({where: {city, activityType:activity }, order: {rating: 'DESC'}, take:takenNoOfPlacesPerActivity})
+            places.push(activityPlaces)
+        }
+        console.log(places)
         return {
             user: userId,
-            name: input.name,
+            name: name,
             day1: ['Alexandria Library', 'Citadel'],
-            activityPlaces
+            places
         }
     }
     async saveGeneratedTrip(generatedTrip){
