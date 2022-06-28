@@ -6,7 +6,7 @@ export interface CustomizedTripDTO{
 
 }
 export interface GeneratedTripDTO{
-    noOfDays: number;
+    numberOfDays: number;
     activities: string[];
     cityId: string;
     name: string;

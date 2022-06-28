@@ -3,11 +3,14 @@ import { readCsv } from "../csvs";
 import * as path from 'path'
 import { Place } from "../../entity/place.entity";
 import { getRepository, Repository } from "typeorm";
+import { City } from "../../entity/city.entity";
 
 export class PlaceSeeder implements Seeder {
     private placeRepository: Repository<Place>;
+    private cityRepository: Repository<City>;
     constructor() {
         this.placeRepository = getRepository(Place);
+        this.cityRepository = getRepository(City);
     }
   public async run(factory: Factory): Promise<void> {
     const placesData = readCsv(path.join(__dirname, '../csvs/Places.csv'));
@@ -22,8 +25,9 @@ export class PlaceSeeder implements Seeder {
                     coordinates: [parseFloat(place.latitude), parseFloat(place.longitude)]
                 }
                 newPlace.photos = []
-                newPlace.activityType = place.activity
+                newPlace.activityType = place.activity.trim()
                 newPlace.price = parseInt(place.price);
+                newPlace.city = await this.cityRepository.findOne({where: {name: place.city.toLowerCase().trim()}})
                 await this.placeRepository.save(newPlace);
             }
         }

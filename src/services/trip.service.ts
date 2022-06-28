@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Place } from '../entity/place.entity';
 import { TripPlace } from '../entity/trip-place.entity';
 import { not, number } from 'joi';
+import { faker } from '@faker-js/faker';
 
 export default class TripService {
     private userRepository: Repository<User>;
@@ -136,23 +137,34 @@ export default class TripService {
         return 'Place deleted from trip';
     }
     async generateTrip(userId: string, input:GeneratedTripDTO){
-        const {activities, cityId, name, noOfDays} = input
-        const activityTypes = activities.map((activityType) => ({activityType}));
+        const {activities, cityId, name, numberOfDays} = input
         const city = await this.cityRepository.findOne(cityId)
         if(!city) throw new OperationalError('City not found', 404)
-        const numberOfPlaces= noOfDays * 3
+        const numberOfPlacesPerDay = 3
+        const numberOfPlaces= numberOfDays * numberOfPlacesPerDay
+        console.log(numberOfDays)
         const takenNoOfPlacesPerActivity = numberOfPlaces / activities.length
-        const places = []
+        let places = [] as Place[]
+        const agenda = []
+        const selectedPlacesIds = [] as string[]
         for(const activity of activities){
-            const activityPlaces = await this.placeRepository.find({where: {city, activityType:activity }, order: {rating: 'DESC'}, take:takenNoOfPlacesPerActivity})
-            places.push(activityPlaces)
+            const activityPlaces = await this.placeRepository.find({where: {city, activityType:activity }, order: {rating: 'DESC'}, take:takenNoOfPlacesPerActivity, select: ['id', 'name', 'photos', 'rating', 'activityType']})
+            places.push(...activityPlaces)
         }
-        console.log(places)
+        for(let i = 1; i <= numberOfDays; i++){
+            places = places.filter((place) => !selectedPlacesIds.some((id) => place.id === id));
+            console.log('places are')
+            console.log(places)
+            const dayPlaces = faker.helpers.arrayElements(places, numberOfPlacesPerDay)
+            const dayPlacesIds = dayPlaces.map(place => place.id)
+            selectedPlacesIds.push(...dayPlacesIds);
+            const dayAgenda = {[`day${i}`]: dayPlaces}
+            agenda.push(dayAgenda)
+        }
         return {
-            user: userId,
             name: name,
-            day1: ['Alexandria Library', 'Citadel'],
-            places
+            city: city.name,
+            agenda
         }
     }
     async saveGeneratedTrip(generatedTrip){
