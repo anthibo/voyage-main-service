@@ -29,13 +29,7 @@ export class Trip extends CommonEntity {
 
     @OneToMany(() => TripPlace, tripPlace => tripPlace.trip, {cascade: true})
     tripPlaces: TripPlace[];
-
-    @Column({ type: 'date' })
-    startDate: Date;
-
-    @Column({ type: 'date' })
-    endDate: Date;
-
+    
     @Column({ type: 'enum', enum: TripType, default: TripType.CUSTOMIZED })
     type: TripType;
     

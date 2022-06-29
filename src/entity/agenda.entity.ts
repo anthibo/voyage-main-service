@@ -12,8 +12,8 @@ export class Agenda{
     @PrimaryColumn('uuid')
     id: string;
 
-    @Column({type: 'date'})
-    day:Date
+    @Column()
+    day:number
 
     @ManyToOne(() => Trip, trip => trip.agendas)
     trip: Trip;

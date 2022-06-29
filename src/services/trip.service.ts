@@ -29,8 +29,6 @@ export default class TripService {
     async createCustomizedTrip(input: CustomizedTripDTO, userId: string) {
         const trip = this.tripRepository.create({
             name: input.name,
-            startDate: input.startDate,
-            endDate: input.endDate,
             type: TripType.CUSTOMIZED,
             city: await this.cityRepository.findOne(input.cityId),
             user: await this.userRepository.findOne(userId),
@@ -47,8 +45,6 @@ export default class TripService {
             throw new OperationalError('You are not allowed to update this trip', 403);
         }
         trip.name = input.name;
-        trip.startDate = input.startDate;
-        trip.endDate = input.endDate;
         trip.city = await this.cityRepository.findOne(input.cityId);
         await this.tripRepository.save(trip);
         return 'Trip updated';
@@ -69,7 +65,7 @@ export default class TripService {
         delete trip.user
         const tripPlaces = await this.tripPlacesRepository.find({where: {trip}, relations: ['place']})
         trip.tripPlaces = tripPlaces;
-        return { ...trip, startDate: moment(trip.startDate).format('DD-MM-YYYY'), endDate: moment(trip.endDate).format('DD-MM-YYYY') };
+        return { ...trip };
     }
     async listNotAddedPlaceTrips(userId: string, placeId: string) {
         // const trips =  await this.tripRepository.createQueryBuilder('trip')
