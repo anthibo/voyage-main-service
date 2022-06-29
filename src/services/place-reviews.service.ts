@@ -50,7 +50,7 @@ export default class PlaceReviewService {
     async getPlaceReviews(placeId: string): Promise<Array<PlaceReview>>{
         const place = await this.placeRepository.findOne(placeId)
         if(!place) throw new OperationalError(`this entity of id ${placeId} does not exists`)
-        let reviews = await this.placeReviewRepository.find({where: {place: place}, relations: ['user']})
+        let reviews = await this.placeReviewRepository.find({where: {place: place}, relations: ['user'], order:{createdOn: 'DESC'}})
         reviews = reviews.map(review => ({...review, user: {id: review.user.id, firstName: review.user.firstName, lastName: review.user.lastName}})) as PlaceReview[]
         return reviews
     }
