@@ -8,6 +8,6 @@ export class AgendaPlace{
   @ManyToOne(() => Agenda,  { primary: true })
   public agenda!: Agenda;
 
-  @ManyToOne(() => Place,  { primary: true })
+  @ManyToOne(() => Place,  { primary: true, eager: true },)
   public place!: Place;
 }

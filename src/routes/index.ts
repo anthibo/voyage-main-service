@@ -91,12 +91,15 @@ export default class Router {
     this.router.post('/trip', this.controllers.tripController.createCustomizedTrip)
     this.router.patch('/trip/:tripId', this.controllers.tripController.updateCustomizedTrip)
     this.router.get('/trip', this.controllers.tripController.listAllUserTrips)
+    this.router.get('/trip/generated', this.controllers.tripController.listGeneratedTrips)
     this.router.get('/trip/:tripId', this.controllers.tripController.getTrip)
     this.router.get('/trip/place/:placeId', this.controllers.tripController.listNotAddedPlaceTrips)
     this.router.delete('/trip/:tripId', this.controllers.tripController.deleteTrip)
     this.router.post('/trip/:tripId/place', this.controllers.tripController.addPlaceToTrip)
     this.router.delete('/trip/:tripId/place/:placeId', this.controllers.tripController.deletePlaceFromTrip)
-    this.router.post('/trip/generate', this.controllers.tripController.createGeneratedTrips)
+    this.router.post('/trip/generated', this.controllers.tripController.createGeneratedTrips)
+    this.router.post('/trip/generated/save', this.controllers.tripController.saveGeneratedTrips)
+
 
     
 

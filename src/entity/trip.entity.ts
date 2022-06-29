@@ -21,13 +21,13 @@ export class Trip extends CommonEntity {
     @ManyToOne(() => City, city => city.cityTrips)
     city: City;
 
-    @OneToMany(() => Agenda, agenda => agenda.trip, {cascade: true})
+    @OneToMany(() => Agenda, agenda => agenda.trip, {cascade: true, nullable: true, eager: true})
     agendas: Agenda[];
 
     @Column()
     name: string
 
-    @OneToMany(() => TripPlace, tripPlace => tripPlace.trip, {cascade: true})
+    @OneToMany(() => TripPlace, tripPlace => tripPlace.trip, {cascade: true, nullable: true})
     tripPlaces: TripPlace[];
     
     @Column({ type: 'enum', enum: TripType, default: TripType.CUSTOMIZED })

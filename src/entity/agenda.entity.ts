@@ -18,6 +18,6 @@ export class Agenda{
     @ManyToOne(() => Trip, trip => trip.agendas)
     trip: Trip;
 
-    @OneToMany(() => AgendaPlace, agendaPlace => agendaPlace)
+    @OneToMany(() => AgendaPlace, agendaPlace => agendaPlace.agenda, {eager: true})
     agendaPlaces: AgendaPlace[];
 }
