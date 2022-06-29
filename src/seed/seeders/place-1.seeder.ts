@@ -18,7 +18,7 @@ export class PlaceSeeder implements Seeder {
             const existingPlace = await this.placeRepository.findOne({ where: { name: place.name.toLowerCase() } });
             if (!existingPlace) {
                 const newPlace = new Place();
-                newPlace.name = place.name;
+                newPlace.name = place.name.trim();
                 newPlace.description = 'place description to be edited later';
                 newPlace.location = {
                     type: "Point",
