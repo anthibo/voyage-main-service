@@ -5,7 +5,7 @@ import UserService from "../services/users.service";
 import { OperationalError } from "../utils/helpers/error";
 import { catcher } from "../utils/helpers/catcher";
 import TripService from "../services/trip.service";
-import { placeTripSchema, createCustomizedTripSchema } from "../utils/schemas/trip.schema";
+import { placeTripSchema, createCustomizedTripSchema, createGeneratedTrip, saveGeneratedTrip } from "../utils/schemas/trip.schema";
 import { validateIdParams } from "../utils/helpers/parameters.validator";
 
 export class TripController {
@@ -23,7 +23,9 @@ export class TripController {
         this.deleteTrip = this.deleteTrip.bind(this)
         this.addPlaceToTrip = this.addPlaceToTrip.bind(this)
         this.deletePlaceFromTrip = this.deletePlaceFromTrip.bind(this)
-        
+        this.createGeneratedTrips = this.createGeneratedTrips.bind(this)
+        this.saveGeneratedTrips = this.saveGeneratedTrips.bind(this)
+        this.listGeneratedTrips = this.listGeneratedTrips.bind(this)
     }
 
     async listAllUserTrips(req: Request, res: Response, next: NextFunction) {
@@ -107,6 +109,42 @@ export class TripController {
             validateIdParams(req.params.placeId);
             const message = await this.tripService.deletePlaceFromTrip(req.user.id, req.params.tripId, req.params.placeId)
             res.json({ message })
+        }
+        catch (err) {
+            catcher(err, next)
+        }
+    }
+
+    // Generated Trips
+    async createGeneratedTrips(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const { value, error } = createGeneratedTrip.validate(req.body)
+            if (error) throw new OperationalError(error.message)
+            const trip = await this.tripService.generateTrip(req.user.id, value)
+            res.json({...trip})
+
+        }
+        catch (err) {
+            catcher(err, next)
+        }
+    }
+
+    async saveGeneratedTrips(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { value, error } = saveGeneratedTrip.validate(req.body)
+            if (error) throw new OperationalError(error.message)
+            const generatedTrip = await this.tripService.saveGeneratedTrip(req.user.id, value)
+            res.json({generatedTrip})
+        }
+        catch (err) {
+            catcher(err, next)
+        }
+    }
+    async listGeneratedTrips(req: Request, res: Response, next: NextFunction) {
+        try{
+            const generatedTrips = await this.tripService.listGeneratedTrips(req.user.id)
+            res.json({trips: generatedTrips})
         }
         catch (err) {
             catcher(err, next)
