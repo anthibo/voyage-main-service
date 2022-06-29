@@ -16,7 +16,7 @@ export class PlaceSeeder implements Seeder {
   public async run(factory: Factory): Promise<void> {
     const placesData = readCsv(path.join(__dirname, '../csvs/Places.csv'));
         for (const place of placesData) {
-            const existingPlace = await this.placeRepository.findOne({ where: { name: place.name.toLowerCase().trim(g) } });
+            const existingPlace = await this.placeRepository.findOne({ where: { name: place.name.toLowerCase().trim() } });
             if (!existingPlace) {
                 const newPlace = new Place();
                 newPlace.name = place.name.trim();
