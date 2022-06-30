@@ -32,3 +32,7 @@ export interface BusinessUserInput {
     username: string;
     password: string
   }
+  export interface ChangeUserPasswordDTO {
+    newPassword: string;
+    confirmNewPassword: string;
+  }

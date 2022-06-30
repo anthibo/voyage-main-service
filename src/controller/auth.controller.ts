@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Joi from 'joi';
 import { OperationalError, NonOperationalError } from "../utils/helpers/error";
 import AuthService from '../services/auth.service'
-import { adminRegisterSchema, agencyRegisterSchema, userLoginSchema, userRegisterSchema } from "../utils/schemas/auth.schema";
+import { adminRegisterSchema, agencyRegisterSchema, changeUserPasswordSchema, userLoginSchema, userRegisterSchema } from "../utils/schemas/auth.schema";
 import { catcher } from "../utils/helpers/catcher";
 
 export class AuthController {
@@ -16,6 +16,7 @@ export class AuthController {
         this.loginNormalUser = this.loginNormalUser.bind(this)
         this.loginAgency = this.loginAgency.bind(this)
         this.loginAdmin = this.loginAdmin.bind(this)
+        this.changeUserPassword = this.changeUserPassword.bind(this)
 
     }
 
@@ -112,8 +113,20 @@ export class AuthController {
             catcher(err, next)
         }
     }
-    async forgetUserPassword(request: Request, response: Response) {
-
+    async changeUserPassword(request: Request, response: Response, next: NextFunction) {
+        try {
+            const { value, error } = changeUserPasswordSchema.validate(request.body)
+            if (error) {
+                return response.status(400).json({
+                    message: error.message
+                })
+            }
+            const message = await this.authService.changeUserPassword(request.user.id, value)
+            return response.status(200).json(message)
+        }
+        catch (err) {
+            catcher(err, next)
+        }
     }
     async forgetAgencyPassword(request: Request, response: Response) {
 

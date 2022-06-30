@@ -40,3 +40,8 @@ export const agencyRegisterSchema = Joi.object({
     nationalId: Joi.string().required()
 
 })
+
+export const changeUserPasswordSchema = Joi.object({
+    newPassword: Joi.string().min(8).required(),
+    confirmNewPassword: Joi.string().required().valid(Joi.ref('newPassword')),
+})

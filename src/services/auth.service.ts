@@ -4,7 +4,7 @@ import { User, UserRole } from '../entity/user.entity';
 import { SignToken } from '../utils/helpers/auth';
 import { Agency } from '../entity/agency.entity';
 import { OperationalError } from '../utils/helpers/error'
-import { BusinessUserInput, LoginInput, NormalUserInput } from '../utils/interfaces/auth.interface';
+import { BusinessUserInput, ChangeUserPasswordDTO, LoginInput, NormalUserInput } from '../utils/interfaces/auth.interface';
 
 export default class AuthService {
   private userRepository: Repository<User>;
@@ -96,5 +96,14 @@ export default class AuthService {
       message: 'success',
       token: `Bearer ${token}`
     }
+  }
+
+  async changeUserPassword(userId: string,input: ChangeUserPasswordDTO){
+    const user = await this.userRepository.findOne(userId)
+    if(!user) throw new OperationalError('User not found', 400)
+    user['password'] = input.newPassword
+    const newUser = await this.userRepository.save(user)
+    return {message: 'user password is updated successfully'};
+
   }
 }

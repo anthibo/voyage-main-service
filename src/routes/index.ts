@@ -57,6 +57,9 @@ export default class Router {
     
     //Auth Middleware
     this.router.use(authMiddleware)
+    // reset user pw
+    this.router.post('/auth/change-password/user', this.controllers.authController.changeUserPassword)
+
     
     //Dashboard routes
     this.router.get('/dashboard/stats',checkPermission('admin'), this.controllers.dashboardController.getPlaceCityUsersStats)
