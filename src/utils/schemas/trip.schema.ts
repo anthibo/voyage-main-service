@@ -21,7 +21,7 @@ export const saveGeneratedTrip = Joi.object({
         name: Joi.string()
     }),
     name: Joi.string().required(),
-    agenda: Joi.array().items(
+    days: Joi.array().items(
         Joi.any()
     )
 })

@@ -11,11 +11,9 @@ export interface CreateGeneratedTripDTO{
 export interface SaveGeneratedTripAgendaDTO{
     cityId: string;
     name: string;
-    agenda: Agenda[];
+    days: Agenda[][];
 }
 interface Agenda {
-    [key: string]: {
-        id: string;
-        name: string;
-    }[]
+  id: string,
+  name: string
 }

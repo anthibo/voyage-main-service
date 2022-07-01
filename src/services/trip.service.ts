@@ -159,14 +159,13 @@ export default class TripService {
             places = places.filter((place) => !selectedPlacesIds.some((id) => place.id === id));
             const dayPlaces = faker.helpers.arrayElements(places, numberOfPlacesPerDay)
             const dayPlacesIds = dayPlaces.map(place => place.id)
-            selectedPlacesIds.push(...dayPlacesIds);
-            const dayAgenda = { [`day${i}`]: dayPlaces }
-            agenda.push(dayAgenda)
+            selectedPlacesIds.push(...dayPlacesIds); 
+            agenda.push(dayPlaces)
         }
         return {
             name: name,
             city: { name: city.name, id: cityId },
-            agenda
+            days: agenda
         }
     }
     async saveGeneratedTrip(userId: string, generatedTripAgenda: SaveGeneratedTripAgendaDTO) {
@@ -174,7 +173,7 @@ export default class TripService {
         if (!user) {
             throw new OperationalError('User not found', 404);
         }
-        const { cityId, name, agenda } = generatedTripAgenda;
+        const { cityId, name,  days } = generatedTripAgenda;
         const city = await this.cityRepository.findOne(cityId)
         if (!city) throw new OperationalError('City not found', 404)
         const generatedTrip = this.tripRepository.create({
@@ -185,17 +184,15 @@ export default class TripService {
             id: uuidv4()
         })
         const savedGeneratedTrip = await this.tripRepository.save(generatedTrip)
-        console.log(savedGeneratedTrip)
         let day = 1;
-        for(const dayAgendaPlaces of agenda){
-            const dayKey = Object.keys(dayAgendaPlaces)[0]
+        for(const dayAgendaPlaces of days){
             const savedAgenda = await this.agendaRepository.save({
                 trip: savedGeneratedTrip,
                 day,
                 id: uuidv4()
             })
 
-            for(let place of dayAgendaPlaces[dayKey]){
+            for(let place of dayAgendaPlaces){
                 place = await this.placeRepository.findOne(place.id)
                 await this.agendaPlaceRepository.save({
                     agenda:savedAgenda,
