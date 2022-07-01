@@ -96,7 +96,7 @@ export class PlaceController {
             }
             const pointObject: Point = {
                 type: "Point",
-                coordinates: value.location
+                coordinates: [value.latitude, value.longitude]
             }
             value.location = pointObject
             const updatedCity = await this.placeService.update(id, value)

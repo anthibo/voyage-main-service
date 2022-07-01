@@ -65,8 +65,8 @@ export default class PlaceService {
     async update(id: string, input: PlaceInput): Promise<Place> {
         const existingPlace = await this.placeRepository.findOne(id)
         if (!existingPlace) throw new OperationalError(`there is no place of id ${id}`, 400)
-        const city = await this.cityRepository.findOne(input.cityId)
-        if (!city) throw new OperationalError(`city of id ${input.cityId} does not exist`)
+        const city = await this.placeRepository.findOne(id)
+        if (!city) throw new OperationalError(`place of id ${input.cityId} does not exist`)
         const existingPlacesWithUniqueData = await this.placeRepository.find({
             where: [{ name: input.name }, { website: input.website }, { phoneNumber: input.phoneNumber }]
         })
