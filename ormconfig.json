@@ -1,15 +1,12 @@
 {
    "type": "postgres",
-   "host": "ec2-23-23-151-191.compute-1.amazonaws.com",
+   "host": "127.0.0.1",
    "port": 5432,
-   "username": "zcczqdxovrvwch",
-   "password": "0e7ce6d159becf9918fe22b5f706f6ddfc3279a38bf4e03320554b53d82150b4",
-   "database": "d2iap8c27jv8o8",
+   "username": "root",
+   "password": "root",
+   "database": "voyage",
    "synchronize": false,
    "logging": false,
-   "extra": {
-      "ssl": true
-   },
    "entities": [
       "src/entity/**/*.entity.ts"
    ],
@@ -19,7 +16,7 @@
    "seeds": [
       "src/seed/seeders/*.seeder.ts"
    ],
-   "factories": [
+   "factories":[
       "src/seed/factory/*.factory.ts"
    ],
    "subscribers": [

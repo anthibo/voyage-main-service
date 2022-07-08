@@ -19,13 +19,17 @@ export default class CityService {
     }
 
     async findAll(filters?: any): Promise<Array<City>> {
-        let cities = []
+        let cities = [] as City[]
         if (filters.name) {
             cities = await this.cityRepository.find({ where: { name: Like(`${filters.name.toLowerCase()}%`) } })
         }
         else {
             cities = await this.cityRepository.find({})
         }
+        cities = cities.map((city) => ({
+            ...city,
+            cityReviews: city.cityReviews.sort((a, b) => a.createdOn.getTime() - b.createdOn.getTime())
+        } as City))
         return cities
     }
 
